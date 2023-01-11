@@ -5,4 +5,24 @@ output:
       toc: FALSE
 ---
 
-Add some text and a figure describing myself.
+#### Bio
+
+![](headshot.jpg){fig-align="center"}
+
+I am a second year part-time PhD student in Epidemiology at UGA. I have spent over five years working in sub-Saharan Africa on both HIV and malaria programs at the health facility and community levels. I now work in the Malaria Branch of the U.S. Centers for Disease Control and Prevention in Atlanta. My research interests include infectious diseases, particularly malaria, with a focus on molecular epidemiology and antimalarial resistance.
+
+#### Statistical Background
+
+I have used R in classes and for some simple statistical analyses and visuals at work, but overall, my experience is very informal, and always involves *a lot* of googling.) What I love about R is the level of online community engagement and discussion between people using it for such a wide variety of purposes. It can be frustrating at times, but it is by far my favorite statistical software I have worked with.
+
+I am quite confident in study design, but the data analysis requirements for the research I do at work generally look fairly similar each time, and I have not had the confidence to explore or branch out into more complicated analyses on my own. My aim in participating in this course is to expand my R toolkit and also to gain confidence in using R more in my day to day work. I really love data visualization, so learning more about how to use Tableau with R would be another really exciting opportunity for me.
+
+### Interesting Fact
+
+I come from a big, fat, Greek family. I have relatives named Hercules, Antigone, and Socrates to name a few!
+
+#### Data Visualization: When Americans are Happiest
+
+I have been a long time follower of various data visualization blogs, and one of my favorites is called [Flowing Data](https://flowingdata.com/). They shared a [video](https://www.youtube.com/watch?v=97TVAHLGXe8) of an interesting example of creative visualization, using data from the Bureau of Labor Statistics 2021 American Time Use Survey.
+
+People were asked about their happiness throughout the day when they ate, traveled, watched television, took care of kids, and other activities, in addition to reporting happiness on a scale from 0 to 6, where 0 was not happy at all and 6 was very happy. The animation shows the average happiness for the fifty most common activities in individuals from age 20 to 70.
