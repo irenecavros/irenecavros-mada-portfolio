@@ -95,3 +95,4 @@ lp.fit <- lm(life_expectancy ~ population, data=year_2000)
 summary(lp.fit) 
 #no statistically significant correlation (p=0.61)
 
+
