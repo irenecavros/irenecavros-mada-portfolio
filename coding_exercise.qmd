@@ -148,3 +148,88 @@ summary(lp.fit)
 ```
 
 #no statistically significant correlation (p=0.61)
+
+
+## **this section added by Yao Lu**
+
+```{r}
+library('DataExplorer')
+library(ggplot2)
+```
+**data clean**
+```{r}
+a <- gapminder
+
+plot_missing(a)
+```
+
+There 28% missing for gdp, try to narrow the continent to asia to see if that get better
+```{r}
+asiadata <- a[which(a$continent=='Asia'),] 
+plot_missing(asiadata)
+```  
+
+Not better. Here we have 3 choice. Do imputation manually, like substitute missing GDP per capital by the mean of GDP per capital.
+Use 'MICE' package to generate a new data set with automatic imputation.
+Drop the rows with missing gdp.
+
+Here for simplicity, I choose drop the missing.
+
+```{r}
+asiadata1 <- asiadata[which(!is.na(asiadata$gdp)),]
+plot_missing(asiadata1)
+asiadata2 <- asiadata1[which(!is.na(asiadata1$infant_mortality)),]
+
+asiadata2$gdppercap <- asiadata2$gdp/asiadata2$population
+```
+
+**data visualization**
+
+```{r}
+
+table(droplevels(asiadata2$region))
+
+hist(asiadata2$infant_mortality)
+hist(asiadata2$life_expectancy)
+hist(asiadata2$fertility)
+hist(asiadata2$gdppercap)
+```
+
+```{r}
+p <- ggplot(data = asiadata2, aes(x = year, y = infant_mortality, group= country, color=country))
+p + geom_line()+ggtitle("infant_mortality") +  xlab("year") + ylab("life time")
+
+```
+Here we can see all the infant_mortality decrease as the time goes on with different decreasing rate.
+
+```{r}
+p <- ggplot(data = asiadata2, aes(x = year, y = life_expectancy, group= country, color=country))
+p + geom_line()+ggtitle("infant_mortality") +  xlab("year") + ylab("life time")
+
+```
+Here we can see all the life_expectancy increase as the time goes on with different increasing rate.
+
+**data modeling**
+
+```{r}
+lm1 <-lm(asiadata2$life_expectancy~asiadata2$infant_mortality+asiadata2$fertility+asiadata2$region+asiadata2$gdppercap)
+anova(lm1)
+```
+Here we can see that all the variables are significant. For detailed relation direction, we will see below.
+
+
+```{r}
+summary(lm1)
+```
+Here we know infant mortality and fertility have negative influence on life time. Gdp per capital have positive influence on life time. 
+
+The life time in different regions are not all same.
+
+```{r}
+#save the output
+outcome <- broom::tidy(lm1)
+```
+
+**future work we can do**
+
+Do imputation to make use of the entire data. Find the countries who have the top life time to find what's their similarities.
