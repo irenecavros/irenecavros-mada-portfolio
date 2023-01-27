@@ -4,8 +4,9 @@ output:
   html_document:
     toc: FALSE
 ---
+
 ```{r}
-#load dslabs package
+#load packages and check data
 library("dslabs")
 library("tidyverse")
 library("ggplot2")
@@ -20,21 +21,25 @@ class(gapminder)
 ```
 
 #Write code that assigns only the African countries to a new object/variable called africadata
+
 ```{r}
 africadata <- gapminder %>% filter (continent== "Africa")
 ```
 
-#overview of africadata 
+#overview of africadata
+
 ```{r}
 str(africadata)
 ```
 
-#summary of africadata 
+#summary of africadata
+
 ```{r}
 summary(africadata)
 ```
 
 #first new object: infant mortality and life expectancy data for African countries
+
 ```{r}
 africa_il <- 
 africadata %>% 
@@ -42,54 +47,62 @@ select(infant_mortality,life_expectancy)
 ```
 
 #second new object: life expectancy and population data for African countries
+
 ```{r}
 africa_lp <- 
 africadata %>%
 select(life_expectancy,population)
 ```
 
-#overview of africa_il and africa_lp 
+#overview of africa_il and africa_lp
+
 ```{r}
 str(africa_il)
 str(africa_lp)
 ```
 
-#summary of africa_il and africa_lp 
+#summary of africa_il and africa_lp
+
 ```{r}
 summary(africa_il)
 summary(africa_lp)
 ```
 
 #plot life expectancy as a function of infant mortality
+
 ```{r}
 africa_il %>%
 ggplot() + aes(x= infant_mortality,y= life_expectancy) + geom_point()
 ```
 
 #plot life expectancy as a function of population size
+
 ```{r}
 africa_lp %>%
 ggplot() + aes(x=log10(population), y=life_expectancy) + geom_point() 
 ```
 
-#identify NA values in infant_mortality 
+#identify NA values in infant_mortality
+
 ```{r}
 subset(africadata,is.na(infant_mortality)) 
 ```
 
-#since there is NA data prior to 1981 and after 2016, choose a year like 2000 to avoid any NAs
-#make a dataset only including data from 2000 
+#since there is NA data prior to 1981 and after 2016, choose a year like 2000 to avoid any NAs #make a dataset only including data from 2000
+
 ```{r}
 year_2000 <-africadata %>% filter(year == "2000")
 ```
 
-#get overview and summary of year_2000 
+#get overview and summary of year_2000
+
 ```{r}
 str(year_2000)
 summary(year_2000)
 ```
 
 #new object: infant mortality and life expectancy data for African countries IN 2000
+
 ```{r}
 africa_il_2000 <- 
 year_2000 %>% 
@@ -97,6 +110,7 @@ select(infant_mortality,life_expectancy)
 ```
 
 #new object: life expectancy and population data for African countries IN 2000
+
 ```{r}
 africa_lp_2000 <- 
 year_2000 %>%
@@ -104,18 +118,21 @@ select(life_expectancy,population)
 ```
 
 #plot life expectancy as function of infant mortality in 2000 only
+
 ```{r}
 africa_il_2000 %>% 
 ggplot() + aes(x= infant_mortality,y= life_expectancy) + geom_point()
 ```
 
 #plot life expectancy as a function of population size with 2000 data
+
 ```{r}
 africa_lp_2000 %>%
 ggplot() + aes(x=log10(population), y=life_expectancy) + geom_point() 
 ```
 
-#fit 2000 data to a linear model (outcome = life_expectancy, predictor = infant_mortality) 
+#fit 2000 data to a linear model (outcome = life_expectancy, predictor = infant_mortality)
+
 ```{r}
 il.fit <- lm(life_expectancy ~ infant_mortality, data=year_2000)
 summary(il.fit) 
@@ -123,12 +140,11 @@ summary(il.fit)
 
 #statistically significant correlation (p=2.83e-8)
 
-#fit 2000 data to a linear model (outcome = life_expectancy, predictor = population)  
+#fit 2000 data to a linear model (outcome = life_expectancy, predictor = population)
+
 ```{r}
 lp.fit <- lm(life_expectancy ~ population, data=year_2000)
 summary(lp.fit) 
 ```
 
 #no statistically significant correlation (p=0.61)
-
-
