@@ -4,8 +4,6 @@ output:
   html_document:
     toc: FALSE
 ---
-
-Placeholder file for the future R coding exercise.
 ```{r}
 #load dslabs package
 library("dslabs")
