@@ -1,15 +1,29 @@
 ---
+<<<<<<< HEAD
 title: "Module 4 Data Analysis Exercise"
 output: 
   html_document:
     toc: FALSE
 ---
+=======
+title: "Week 4 Data Analysis Exercise"
+author: "Irene Cavros"
+editor: visual
+---
+
+
+>>>>>>> main
 ***Summary***
 
 Data for this exercise was pulled from the CDC's data repository. [This dataset](https://data.cdc.gov/NCHS/NCHS-Drug-Poisoning-Mortality-by-County-United-Sta/pbkm-d27e) describes drug poisoning deaths at the county level by selected demographic characteristics and includes age-adjusted death rates for drug poisoning from 1999 to 2015.
 
 **Loading packages, dataset, and reviewing the raw data:**
 
+<<<<<<< HEAD
+=======
+---
+
+>>>>>>> main
 ```{r}
 #load packages
 library(readr)
@@ -19,13 +33,21 @@ library(ggplot2)
 library(naniar)
 
 #load dataset
+<<<<<<< HEAD
 drug_poison_data <- read_csv("dataanalysis-exercise/data/raw/drug_poison_data.csv")
+=======
+drug_poison_data <- read_csv("dataanalysis-exercise/data/raw_data/drug_poison_data.csv")
+>>>>>>> main
 
 #examine data
 summary(drug_poison_data)
 
 ```
 
+<<<<<<< HEAD
+=======
+---
+>>>>>>> main
 **Creating a new dataframe called "data" with variables of interest:**
 
 The selected variables here are year, state, county, population and death rate.
@@ -41,6 +63,10 @@ data <- drug_poison_data %>%
 ```{r}
 georgia <- data %>%
   filter(state %in% "Georgia")
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 ```
 
 This new final dataset (georgia) gives us cases of drug poisoning from 1999-2015 in the state of Georgia.
@@ -48,7 +74,11 @@ This new final dataset (georgia) gives us cases of drug poisoning from 1999-2015
 **Save cleaned data as an RDS file in processed_data folder:**
 
 ```{r}
+<<<<<<< HEAD
 saveRDS(georgia, file="dataanalysis-exercise/data/processed/georgia_clean.rds")
+=======
+saveRDS(georgia, file="dataanalysis-exercise/data/processed_data/georgia_clean.rds")
+>>>>>>> main
 ```
 
 **Save summary table:**
@@ -60,6 +90,12 @@ print(summary_georgia)
 
 #save it as an RDS file
 saveRDS(summary_georgia, file="dataanalysis-exercise/results/summary_georgia.rds")
+<<<<<<< HEAD
 
 ```
 
+=======
+```
+
+---
+>>>>>>> main
