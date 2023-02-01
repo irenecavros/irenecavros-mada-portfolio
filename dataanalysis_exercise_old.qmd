@@ -1,0 +1,66 @@
+---
+title: "Week 4: Data Analysis Exercise"
+author: Irene Cavros
+date: 2023-01-31
+output: 
+  html_document:
+    toc: FALSE
+---
+
+***Summary***
+
+Data for this exercise was pulled from the CDC's data repository. [This dataset](https://data.cdc.gov/NCHS/NCHS-Drug-Poisoning-Mortality-by-County-United-Sta/pbkm-d27e) describes drug poisoning deaths at the county level by selected demographic characteristics and includes age-adjusted death rates for drug poisoning from 1999 to 2015.
+
+**Loading packages, dataset, and reviewing the raw data:**
+
+```{r}
+
+#load packages
+library(readr)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(naniar)
+
+#load dataset
+drug_poison_data <- read_csv("dataanalysis-exercise/data/raw_data/drug_poison_data.csv")
+
+#examine data
+summary(drug_poison_data)
+```
+
+**Creating a new dataframe called "data" with variables of interest:**
+
+The selected variables here are year, state, county, population and death rate.
+
+```{r}
+#refined dataset with only variables of interest
+data <- drug_poison_data %>%
+    select(year, state, county, population, death_rate)
+```
+
+**Filter to look at only cases in Georgia:**
+
+```{r}
+georgia <- data %>%
+  filter(state %in% "Georgia")
+
+```
+
+This new final dataset (georgia) gives us cases of drug poisoning from 1999-2015 in the state of Georgia.
+
+**Save cleaned data as an RDS file in processed_data folder:**
+
+```{r}
+saveRDS(georgia, file="dataanalysis-exercise/data/processed_data/georgia_clean.rds")
+```
+
+**Save summary table:**
+
+```{r}
+#make summary table
+summary_georgia = data.frame(do.call(cbind, lapply(georgia, summary)))
+
+#save it as an RDS file
+saveRDS(summary_georgia, file="dataanalysis-exercise/data/processed_data/summary_georgia.rds")
+```
