@@ -1,5 +1,5 @@
 ---
-title: "Week 4: Data Analysis Exercise"
+title: "Week 4 Data Analysis Exercise"
 author: "Irene Cavros"
 editor: visual
 ---
@@ -64,7 +64,7 @@ summary_georgia = data.frame(do.call(cbind, lapply(georgia, summary)))
 print(summary_georgia)
 
 #save it as an RDS file
-saveRDS(summary_georgia, file="dataanalysis-exercise/data/processed_data/summary_georgia.rds")
+saveRDS(summary_georgia, file="dataanalysis-exercise/results/summary_georgia.rds")
 ```
 
 ---
