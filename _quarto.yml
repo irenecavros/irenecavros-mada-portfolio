@@ -16,15 +16,8 @@ website:
             href: ./visualization_exercise.html
           - text: "Tidy Tuesday Exercise"
             href: ./tidytuesday_exercise.html
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-
-=======
           - text: "Data Analysis Exercise"
-            href: ./dataanalysis_exercise.html
->>>>>>> main
->>>>>>> main
+            href: ./dataanalysis_exercise.htm
           
     right:
       - icon: github 
