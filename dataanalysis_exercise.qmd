@@ -1,29 +1,15 @@
 ---
-<<<<<<< HEAD
 title: "Module 4 Data Analysis Exercise"
-output: 
-  html_document:
-    toc: FALSE
----
-=======
-title: "Week 4 Data Analysis Exercise"
 author: "Irene Cavros"
-editor: visual
+output: html_document
 ---
 
-
->>>>>>> main
 ***Summary***
 
 Data for this exercise was pulled from the CDC's data repository. [This dataset](https://data.cdc.gov/NCHS/NCHS-Drug-Poisoning-Mortality-by-County-United-Sta/pbkm-d27e) describes drug poisoning deaths at the county level by selected demographic characteristics and includes age-adjusted death rates for drug poisoning from 1999 to 2015.
 
 **Loading packages, dataset, and reviewing the raw data:**
 
-<<<<<<< HEAD
-=======
----
-
->>>>>>> main
 ```{r}
 #load packages
 library(readr)
@@ -33,21 +19,14 @@ library(ggplot2)
 library(naniar)
 
 #load dataset
-<<<<<<< HEAD
 drug_poison_data <- read_csv("dataanalysis-exercise/data/raw/drug_poison_data.csv")
-=======
 drug_poison_data <- read_csv("dataanalysis-exercise/data/raw_data/drug_poison_data.csv")
->>>>>>> main
 
 #examine data
 summary(drug_poison_data)
 
 ```
 
-<<<<<<< HEAD
-=======
----
->>>>>>> main
 **Creating a new dataframe called "data" with variables of interest:**
 
 The selected variables here are year, state, county, population and death rate.
@@ -63,10 +42,6 @@ data <- drug_poison_data %>%
 ```{r}
 georgia <- data %>%
   filter(state %in% "Georgia")
-<<<<<<< HEAD
-=======
-
->>>>>>> main
 ```
 
 This new final dataset (georgia) gives us cases of drug poisoning from 1999-2015 in the state of Georgia.
@@ -74,11 +49,8 @@ This new final dataset (georgia) gives us cases of drug poisoning from 1999-2015
 **Save cleaned data as an RDS file in processed_data folder:**
 
 ```{r}
-<<<<<<< HEAD
 saveRDS(georgia, file="dataanalysis-exercise/data/processed/georgia_clean.rds")
-=======
 saveRDS(georgia, file="dataanalysis-exercise/data/processed_data/georgia_clean.rds")
->>>>>>> main
 ```
 
 **Save summary table:**
@@ -90,12 +62,128 @@ print(summary_georgia)
 
 #save it as an RDS file
 saveRDS(summary_georgia, file="dataanalysis-exercise/results/summary_georgia.rds")
-<<<<<<< HEAD
+```
+
+
+
+
+
+
+**---------------------------------------**
+
+**THIS SECTION ADDED BY NICOLE LUISI**
+
+**---------------------------------------**
+
+#### Load required packages
+
+```{r}
+#| warning: false
+library(here)
+library(stringr)
+library(ggplot2)
+library(gridExtra)
+library(dplyr)
+```
+
+#### Read in clean RDS file and review
+
+```{r}
+georgia_clean_NL <- readRDS(here("dataanalysis-exercise", "data", "processed_data", "georgia_clean.rds"))
+
+str(georgia_clean_NL)
+head(georgia_clean_NL)
+```
+
+#### Can't work with death_rate variable as character range so splitting into numeric min and max variables
+
+```{r}
+georgia_clean_NL$death_rate_min <- as.numeric(str_extract(georgia_clean_NL$death_rate, "[^-]+"))
+georgia_clean_NL$death_rate_max <- as.numeric(str_extract(georgia_clean_NL$death_rate, '\\b\\w+$'))
+
+# Check min and max
+head(georgia_clean_NL[,c("death_rate", "death_rate_min", "death_rate_max")])
+```
+
+#### Create subsets for Dekalb and Fulton county
+
+```{r}
+georgia_clean_NL_dekalb <- georgia_clean_NL %>%
+  filter(county == "DeKalb County, GA")
+georgia_clean_NL_dekalb <- georgia_clean_NL_dekalb[,c("year", "county","death_rate_min", "death_rate_max")]
+georgia_clean_NL_fulton <- georgia_clean_NL %>%
+  filter(county == "Fulton County, GA")
+georgia_clean_NL_fulton <- georgia_clean_NL_fulton[,c("year", "county","death_rate_min", "death_rate_max")]
+```
+
+#### Plot min and max death rates for Dekalb and Fulton county
+
+```{r}
+# Transform to long format
+georgia_clean_NL_dekalb_long <- gather(georgia_clean_NL_dekalb, group, value, death_rate_min:death_rate_max) %>% arrange(factor(year, levels = c("1999", "2000", "2001", "2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015"))) %>% 
+  mutate(year=factor(year, levels=unique(year)))
+
+georgia_clean_NL_fulton_long <- gather(georgia_clean_NL_fulton, group, value, death_rate_min:death_rate_max) %>% arrange(factor(year, levels = c("1999", "2000", "2001", "2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015"))) %>% 
+  mutate(year=factor(year, levels=unique(year)))
+
+# Dekalb plot
+dekalb_plot <- ggplot(georgia_clean_NL_dekalb_long, aes(x = year, y = value, fill = group)) +
+  geom_col(position = "dodge", colour = "black") +
+  scale_fill_brewer(palette = "Set1") +
+  ylab("Year") +
+  xlab("Age-Adjusted Death Rate for Drug Poisoning") +  
+  ggtitle("Dekalb County") + 
+  scale_y_continuous(breaks=seq(0, 15, 5))
+
+# Fulton plot
+fulton_plot <- ggplot(georgia_clean_NL_fulton_long, aes(x = year, y = value, fill = group)) +
+  geom_col(position = "dodge", colour = "black") +
+  scale_fill_brewer(palette = "Set1") +
+  ylab("Year") +
+  xlab("Age-Adjusted Death Rate for Drug Poisoning") +  
+  ggtitle("Fulton County") + 
+  scale_y_continuous(breaks=seq(0, 15, 15))
+
+# Grid of plots
+grid.arrange(dekalb_plot, fulton_plot, ncol = 1)
+```
+
+#### Create objects with overall min and max by year for 2015 and 2000
+
+```{r}
+year_minmax <- georgia_clean_NL %>% select(year, death_rate_min, death_rate_max)
+
+year_minmax1 <- year_minmax %>%
+  group_by(year) %>%
+  summarise(
+    MaxByYear = max(death_rate_max, na.rm = T),
+    MinByYear = min(death_rate_min, na.rm = T)
+  ) %>%
+  arrange(year)
 
 ```
 
-=======
+#### Plot overall (lowest) min and (highest) max death rate by year 
+
+```{r}
+plot(year_minmax1$year,                             
+     year_minmax1$MinByYear,
+     main = "Overall Min and Max Death Rate by Year, All Counties",
+     type = "l",
+     col = 2,
+     ylim = c(- 15, 40),
+     xlab = "Year",
+     ylab = "Death Rate")
+lines(year_minmax1$year,                            
+      year_minmax1$MaxByYear,
+      type = "l",
+      col = 3)
+legend("topright",                          
+       c("Min Death Rate", "Max Death Rate"),
+       lty = 1,
+       col = 2:4)
 ```
 
----
->>>>>>> main
+
+
+
