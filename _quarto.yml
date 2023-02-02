@@ -17,7 +17,7 @@ website:
           - text: "Tidy Tuesday Exercise"
             href: ./tidytuesday_exercise.html
           - text: "Data Analysis Exercise"
-            href: ./dataanalysis_exercise.html
+            href: ./dataanalysis_exercise.htm
           
     right:
       - icon: github
