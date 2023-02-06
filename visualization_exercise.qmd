@@ -13,7 +13,7 @@ The data I selected for this exercise in reproducing a visualization comes from 
 
 I liked the way this visualization looked because it had a bar graph element which looked embedded into a table. I had to do a little digging online because I was not really familiar with how to do something like this in `ggplot2` or any other package, but I did my best to get as close as possible to the final product on the FiveThirtyEight article. Below are the steps I followed to achieve my result!
 
-#### Step 1: Install and loading packages
+#### Step 1: Installing and loading packages
 
 ```{r}
 options(repos = list(CRAN="http://cran.rstudio.com/"))
@@ -40,7 +40,7 @@ unisex_names_table <- read_csv("data/unisex_names_table.csv")
 The data in `unisex_names_table.csv` contains the over 900 names given to each sex at least one-third of the time and with a minimum of 100 people. It has the following variables:
 
 | Header         | Definition                                                                                           |
-|---------------|---------------------------------------------------------|
+|-----------------|-------------------------------------------------------|
 | `name`         | First names from the [Social Security Administration](http://www.ssa.gov/oact/babynames/limits.html) |
 | `total`        | Total number of living Americans with the name                                                       |
 | `male_share`   | Percentage of people with the name who are male                                                      |
@@ -147,9 +147,6 @@ width = 70,
 scale_type = "none",
 text_color = "white"
 )
-```
-
-```{}
 ```
 
 Unfortunately this does not give us the percentages in one clean table, but I had a very hard time finding good examples of how to correct this so I am stuck at this one point. If anyone has any suggestions of things to try please let me know!
