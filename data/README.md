@@ -1,9 +1,13 @@
-# Masculinity Survey
+# Unisex Names
 
-This directory contains data behind the story [What Do Men Think It Means To Be A Man?](https://fivethirtyeight.com/features/what-do-men-think-it-means-to-be-a-man).
+This directory contains the code and data behind the story [The Most Common Unisex Names In America: Is Yours One Of Them?](http://fivethirtyeight.com/features/there-are-922-unisex-names-in-america-is-yours-one-of-them)
 
-`masculinity-survey.csv` contains the results of a survey of 1,615 adult men conducted by SurveyMonkey in partnership with FiveThirtyEight and WNYC Studios from May 10-22, 2018. The modeled error estimate for this survey is plus or minus 2.5 percentage points. The percentages have been weighted for age, race, education, and geography using the Census Bureau’s American Community Survey to reflect the demographic composition of the United States age 18 and over. Crosstabs with less than 100 respondents have been left blank because responses would not be statistically significant.
+The script `unisex_names.R` generates the data in `unisex_names_table.csv`, which contains the over 900 names given to each sex at least one-third of the time and with a minimum of 100 people. It has the following variables:
 
-`raw-responses.csv` contains all 1,615 responses to the survey including the weights for each response. Responses to open-ended questions have been omitted, including those where a respondent explained what they meant by selecting the "other" option in response to a question.
-
-`masculinity-survey.pdf` contains the questions corresponding to the colums in the raw responses file.
+Header | Definition
+---|---------
+`name` | First names from the [Social Security Administration](http://www.ssa.gov/oact/babynames/limits.html)
+`total` | Total number of living Americans with the name
+`male_share` | Percentage of people with the name who are male
+`female_share` | Percentage of people with the name who are female
+`gap` | Gap between male_share and female_share

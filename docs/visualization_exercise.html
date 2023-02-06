@@ -20,6 +20,69 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1.6em;
   vertical-align: middle;
 }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
@@ -144,9 +207,2387 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>Placeholder file for the future visualization exercise.</p>
+<section id="dataviz-inspiration" class="level4">
+<h4 class="anchored" data-anchor-id="dataviz-inspiration">DataViz inspiration</h4>
+<p>The data I selected for this exercise in reproducing a visualization comes from the FiveThirtyEight story <a href="http://fivethirtyeight.com/features/there-are-922-unisex-names-in-america-is-yours-one-of-them">The Most Common Unisex Names In America: Is Yours One Of Them?</a> The dataset looks the most common unisex names in America through the year 2013, using data from the Social Security Administration.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="common.unisex.names.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+<p>I liked the way this visualization looked because it had a bar graph element which looked embedded into a table. I had to do a little digging online because I was not really familiar with how to do something like this in <code>ggplot2</code> or any other package, but I did my best to get as close as possible to the final product on the FiveThirtyEight article. Below are the steps I followed to achieve my result!</p>
+</section>
+<section id="step-1-install-and-loading-packages" class="level4">
+<h4 class="anchored" data-anchor-id="step-1-install-and-loading-packages">Step 1: Install and loading packages</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">repos =</span> <span class="fu">list</span>(<span class="at">CRAN=</span><span class="st">"http://cran.rstudio.com/"</span>))</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#install</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"gt"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+The downloaded binary packages are in
+    /var/folders/gx/td5t8_t911bf6r8cdbtt529r0000gn/T//Rtmp7muUjx/downloaded_packages</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"gtExtras"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+The downloaded binary packages are in
+    /var/folders/gx/td5t8_t911bf6r8cdbtt529r0000gn/T//Rtmp7muUjx/downloaded_packages</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#load</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(readr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: readr</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(dplyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: dplyr</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'dplyr'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:stats':
+
+    filter, lag</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(ggplot2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: ggplot2</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: tidyverse</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
+✔ tibble  3.1.8     ✔ stringr 1.5.0
+✔ tidyr   1.3.0     ✔ forcats 1.0.0
+✔ purrr   1.0.1     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(gt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: gt</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(gtExtras)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: gtExtras</code></pre>
+</div>
+</div>
+</section>
+<section id="step-2-data-import" class="level4">
+<h4 class="anchored" data-anchor-id="step-2-data-import">Step 2: Data import</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>unisex_names_table <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/unisex_names_table.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>New names:
+Rows: 919 Columns: 6
+── Column specification
+──────────────────────────────────────────────────────── Delimiter: "," chr
+(1): name dbl (5): ...1, total, male_share, female_share, gap
+ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+Specify the column types or set `show_col_types = FALSE` to quiet this message.
+• `` -&gt; `...1`</code></pre>
+</div>
+</div>
+<p>The data in <code>unisex_names_table.csv</code> contains the over 900 names given to each sex at least one-third of the time and with a minimum of 100 people. It has the following variables:</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Header</th>
+<th>Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>name</code></td>
+<td>First names from the <a href="http://www.ssa.gov/oact/babynames/limits.html">Social Security Administration</a></td>
+</tr>
+<tr class="even">
+<td><code>total</code></td>
+<td>Total number of living Americans with the name</td>
+</tr>
+<tr class="odd">
+<td><code>male_share</code></td>
+<td>Percentage of people with the name who are male</td>
+</tr>
+<tr class="even">
+<td><code>female_share</code></td>
+<td>Percentage of people with the name who are female</td>
+</tr>
+<tr class="odd">
+<td><code>gap</code></td>
+<td>Gap between male_share and female_share</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="step-3-filtering-for-the-data-of-interest" class="level4">
+<h4 class="anchored" data-anchor-id="step-3-filtering-for-the-data-of-interest">Step 3: Filtering for the data of interest</h4>
+<p>Since the visualization only looks at the 20 most popular unisex names, we want to exclude the rest of the names from the dataset that are less popular. Before we do that, let’s do some data wrangling to make things a bit easier and create a duplicate dataset called <code>data</code>. In terms of data wrangling, the main thing I want to do is change the variable name of the first column because currently it is <code>…1</code>, which could cause some errors or confusion. So let’s change it to <code>popularity_rank</code> since it tells us how each name ranks in its overall frequency.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>unisex_names_table <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(unisex_names_table)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> unisex_names_table </span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(data) </span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(data)[<span class="fu">colnames</span>(data) <span class="sc">==</span> <span class="st">"...1"</span>] <span class="ot">=</span> <span class="st">"popularity_rank"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Since we are only interested in the top 20 most popular names, we can get rid of all of the less popular names.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>top20 <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(popularity_rank <span class="sc">&lt;=</span> <span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>I’m also going to drop the gap variable since it will not be a part of this visualization.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>top20_nogap <span class="ot">&lt;-</span> top20 <span class="sc">%&gt;%</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(popularity_rank, name, total, male_share, female_share)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="step-4-ensuring-variables-are-being-read-by-r-as-the-correct-type" class="level4">
+<h4 class="anchored" data-anchor-id="step-4-ensuring-variables-are-being-read-by-r-as-the-correct-type">Step 4: Ensuring variables are being read by R as the correct type</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>top20_nogap <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(top20_nogap)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  top20_nogap<span class="sc">$</span>popularity_rank <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(top20_nogap<span class="sc">$</span>popularity_rank)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  top20_nogap<span class="sc">$</span>name <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(top20_nogap<span class="sc">$</span>name)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  top20_nogap<span class="sc">$</span>total <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(top20_nogap<span class="sc">$</span>total)</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  top20_nogap<span class="sc">$</span>male_share <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(top20_nogap<span class="sc">$</span>male_share)</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  top20_nogap<span class="sc">$</span>female_share <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(top20_nogap<span class="sc">$</span>female_share)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This step is just to ensure that the variables that are numeric are being read as numeric and the variables that are characters are read as characters.</p>
+</section>
+<section id="step-5-creating-a-gt-table" class="level4">
+<h4 class="anchored" data-anchor-id="step-5-creating-a-gt-table">Step 5: Creating a gt table</h4>
+<p>The <code>gt</code> extension is used in order to produce high quality tables. The <code>gtExtras</code> extension adds even more functionality so that we can make are table look as much like the example as possible. Let’s call our table <code>tab</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>tab <span class="ot">&lt;-</span> top20_nogap <span class="sc">%&gt;%</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>()</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>tab <span class="ot">&lt;-</span> tab <span class="sc">%&gt;%</span> </span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">#add title and subtitle</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"The most common unisex names in America"</span>,</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="fu">md</span>(<span class="st">"Names for which at least one-third of recipients were male and at least one-third were female, through 2013"</span>)</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>tab</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div id="gapxamimro" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+:where(#gapxamimro) .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+:where(#gapxamimro) .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#gapxamimro) .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+:where(#gapxamimro) .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+:where(#gapxamimro) .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+:where(#gapxamimro) .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+:where(#gapxamimro) .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#gapxamimro) .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+:where(#gapxamimro) .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+:where(#gapxamimro) .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+:where(#gapxamimro) .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+:where(#gapxamimro) .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+:where(#gapxamimro) .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+:where(#gapxamimro) .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+:where(#gapxamimro) .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+:where(#gapxamimro) .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+:where(#gapxamimro) .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+:where(#gapxamimro) .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#gapxamimro) .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+:where(#gapxamimro) .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+:where(#gapxamimro) .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#gapxamimro) .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+:where(#gapxamimro) .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+:where(#gapxamimro) .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+:where(#gapxamimro) .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#gapxamimro) .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+:where(#gapxamimro) .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+:where(#gapxamimro) .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+:where(#gapxamimro) .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#gapxamimro) .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#gapxamimro) .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#gapxamimro) .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#gapxamimro) .gt_left {
+  text-align: left;
+}
+
+:where(#gapxamimro) .gt_center {
+  text-align: center;
+}
+
+:where(#gapxamimro) .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+:where(#gapxamimro) .gt_font_normal {
+  font-weight: normal;
+}
+
+:where(#gapxamimro) .gt_font_bold {
+  font-weight: bold;
+}
+
+:where(#gapxamimro) .gt_font_italic {
+  font-style: italic;
+}
+
+:where(#gapxamimro) .gt_super {
+  font-size: 65%;
+}
+
+:where(#gapxamimro) .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 75%;
+  vertical-align: 0.4em;
+}
+
+:where(#gapxamimro) .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+:where(#gapxamimro) .gt_indent_1 {
+  text-indent: 5px;
+}
+
+:where(#gapxamimro) .gt_indent_2 {
+  text-indent: 10px;
+}
+
+:where(#gapxamimro) .gt_indent_3 {
+  text-indent: 15px;
+}
+
+:where(#gapxamimro) .gt_indent_4 {
+  text-indent: 20px;
+}
+
+:where(#gapxamimro) .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table">
+  <thead class="gt_header">
+    <tr>
+      <td colspan="5" class="gt_heading gt_title gt_font_normal" style="">The most common unisex names in America</td>
+    </tr>
+    <tr>
+      <td colspan="5" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border" style="">Names for which at least one-third of recipients were male and at least one-third were female, through 2013</td>
+    </tr>
+  </thead>
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="popularity_rank">popularity_rank</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="name">name</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="total">total</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="male_share">male_share</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="female_share">female_share</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="popularity_rank" class="gt_row gt_right">1</td>
+<td headers="name" class="gt_row gt_center">Casey</td>
+<td headers="total" class="gt_row gt_right">176544.33</td>
+<td headers="male_share" class="gt_row gt_right">0.5842866</td>
+<td headers="female_share" class="gt_row gt_right">0.4157134</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right">2</td>
+<td headers="name" class="gt_row gt_center">Riley</td>
+<td headers="total" class="gt_row gt_right">154860.67</td>
+<td headers="male_share" class="gt_row gt_right">0.5076391</td>
+<td headers="female_share" class="gt_row gt_right">0.4923609</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right">3</td>
+<td headers="name" class="gt_row gt_center">Jessie</td>
+<td headers="total" class="gt_row gt_right">136381.83</td>
+<td headers="male_share" class="gt_row gt_right">0.4778343</td>
+<td headers="female_share" class="gt_row gt_right">0.5221657</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right">4</td>
+<td headers="name" class="gt_row gt_center">Jackie</td>
+<td headers="total" class="gt_row gt_right">132928.79</td>
+<td headers="male_share" class="gt_row gt_right">0.4211326</td>
+<td headers="female_share" class="gt_row gt_right">0.5788674</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right">5</td>
+<td headers="name" class="gt_row gt_center">Avery</td>
+<td headers="total" class="gt_row gt_right">121797.42</td>
+<td headers="male_share" class="gt_row gt_right">0.3352131</td>
+<td headers="female_share" class="gt_row gt_right">0.6647869</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right">6</td>
+<td headers="name" class="gt_row gt_center">Jaime</td>
+<td headers="total" class="gt_row gt_right">109870.19</td>
+<td headers="male_share" class="gt_row gt_right">0.5617929</td>
+<td headers="female_share" class="gt_row gt_right">0.4382071</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right">7</td>
+<td headers="name" class="gt_row gt_center">Peyton</td>
+<td headers="total" class="gt_row gt_right">94896.40</td>
+<td headers="male_share" class="gt_row gt_right">0.4337194</td>
+<td headers="female_share" class="gt_row gt_right">0.5662806</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right">8</td>
+<td headers="name" class="gt_row gt_center">Kerry</td>
+<td headers="total" class="gt_row gt_right">88963.93</td>
+<td headers="male_share" class="gt_row gt_right">0.4839488</td>
+<td headers="female_share" class="gt_row gt_right">0.5160512</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right">9</td>
+<td headers="name" class="gt_row gt_center">Jody</td>
+<td headers="total" class="gt_row gt_right">80400.52</td>
+<td headers="male_share" class="gt_row gt_right">0.3520680</td>
+<td headers="female_share" class="gt_row gt_right">0.6479320</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right">10</td>
+<td headers="name" class="gt_row gt_center">Kendall</td>
+<td headers="total" class="gt_row gt_right">79210.87</td>
+<td headers="male_share" class="gt_row gt_right">0.3723667</td>
+<td headers="female_share" class="gt_row gt_right">0.6276333</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right">11</td>
+<td headers="name" class="gt_row gt_center">Payton</td>
+<td headers="total" class="gt_row gt_right">64151.63</td>
+<td headers="male_share" class="gt_row gt_right">0.3343577</td>
+<td headers="female_share" class="gt_row gt_right">0.6656423</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right">12</td>
+<td headers="name" class="gt_row gt_center">Skyler</td>
+<td headers="total" class="gt_row gt_right">53486.39</td>
+<td headers="male_share" class="gt_row gt_right">0.6460531</td>
+<td headers="female_share" class="gt_row gt_right">0.3539469</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right">13</td>
+<td headers="name" class="gt_row gt_center">Frankie</td>
+<td headers="total" class="gt_row gt_right">51288.07</td>
+<td headers="male_share" class="gt_row gt_right">0.6236713</td>
+<td headers="female_share" class="gt_row gt_right">0.3763287</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right">14</td>
+<td headers="name" class="gt_row gt_center">Pat</td>
+<td headers="total" class="gt_row gt_right">44781.60</td>
+<td headers="male_share" class="gt_row gt_right">0.3690344</td>
+<td headers="female_share" class="gt_row gt_right">0.6309656</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right">15</td>
+<td headers="name" class="gt_row gt_center">Quinn</td>
+<td headers="total" class="gt_row gt_right">41920.94</td>
+<td headers="male_share" class="gt_row gt_right">0.6357419</td>
+<td headers="female_share" class="gt_row gt_right">0.3642581</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right">16</td>
+<td headers="name" class="gt_row gt_center">Harley</td>
+<td headers="total" class="gt_row gt_right">41237.57</td>
+<td headers="male_share" class="gt_row gt_right">0.5717018</td>
+<td headers="female_share" class="gt_row gt_right">0.4282982</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right">17</td>
+<td headers="name" class="gt_row gt_center">Reese</td>
+<td headers="total" class="gt_row gt_right">36360.52</td>
+<td headers="male_share" class="gt_row gt_right">0.3619103</td>
+<td headers="female_share" class="gt_row gt_right">0.6380897</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right">18</td>
+<td headers="name" class="gt_row gt_center">Robbie</td>
+<td headers="total" class="gt_row gt_right">32636.05</td>
+<td headers="male_share" class="gt_row gt_right">0.5531569</td>
+<td headers="female_share" class="gt_row gt_right">0.4468431</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right">19</td>
+<td headers="name" class="gt_row gt_center">Tommie</td>
+<td headers="total" class="gt_row gt_right">29528.79</td>
+<td headers="male_share" class="gt_row gt_right">0.6644377</td>
+<td headers="female_share" class="gt_row gt_right">0.3355623</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right">20</td>
+<td headers="name" class="gt_row gt_center">Justice</td>
+<td headers="total" class="gt_row gt_right">27350.56</td>
+<td headers="male_share" class="gt_row gt_right">0.5281950</td>
+<td headers="female_share" class="gt_row gt_right">0.4718050</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="step-5-tweaking-our-gt-table-formatting" class="level4">
+<h4 class="anchored" data-anchor-id="step-5-tweaking-our-gt-table-formatting">Step 5: Tweaking our gt table formatting</h4>
+<p>Now that we have created a first draft of the table with a title and subtitle that matches our example, let’s make some more changes. First, let’s get the text in an NYT theme so it looks article ready. Second, we want to get rid of all of the decimal places for values under the column titled ‘total.’ This led me to realize I needed to change some column names so that they matched, so that is our last step here.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>tab <span class="ot">&lt;-</span> tab <span class="sc">%&gt;%</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  gtExtras<span class="sc">::</span><span class="fu">gt_theme_nytimes</span>() <span class="sc">%&gt;%</span> <span class="co">#nyt theme</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_number</span>(</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">columns =</span> total,</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">decimals =</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span> <span class="co">#remove decimal places</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">popularity_rank =</span> <span class="st">" "</span>, <span class="co">#change column names to match example</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">"Name"</span>, </span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">total =</span> <span class="st">"Estimated people with name"</span>, <span class="co">#change name to match </span></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">male_share =</span> <span class="st">"Male share"</span>, </span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">female_share =</span> <span class="st">"Female share"</span>)</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>tab</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div id="wqbnlecotb" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+:where(#wqbnlecotb) .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+:where(#wqbnlecotb) .gt_heading {
+  background-color: #FFFFFF;
+  text-align: left;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#wqbnlecotb) .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+:where(#wqbnlecotb) .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+:where(#wqbnlecotb) .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+:where(#wqbnlecotb) .gt_bottom_border {
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+:where(#wqbnlecotb) .gt_col_headings {
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: none;
+  border-bottom-width: 1px;
+  border-bottom-color: #334422;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#wqbnlecotb) .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 12px;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+:where(#wqbnlecotb) .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 12px;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+:where(#wqbnlecotb) .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+:where(#wqbnlecotb) .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+:where(#wqbnlecotb) .gt_column_spanner {
+  border-bottom-style: none;
+  border-bottom-width: 1px;
+  border-bottom-color: #334422;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+:where(#wqbnlecotb) .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+:where(#wqbnlecotb) .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+:where(#wqbnlecotb) .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+:where(#wqbnlecotb) .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+:where(#wqbnlecotb) .gt_row {
+  padding-top: 7px;
+  padding-bottom: 7px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+:where(#wqbnlecotb) .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#wqbnlecotb) .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+:where(#wqbnlecotb) .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+:where(#wqbnlecotb) .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#wqbnlecotb) .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+:where(#wqbnlecotb) .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+:where(#wqbnlecotb) .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+:where(#wqbnlecotb) .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#wqbnlecotb) .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+:where(#wqbnlecotb) .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+:where(#wqbnlecotb) .gt_table_body {
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #FFFFFF;
+}
+
+:where(#wqbnlecotb) .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#wqbnlecotb) .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#wqbnlecotb) .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#wqbnlecotb) .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#wqbnlecotb) .gt_left {
+  text-align: left;
+}
+
+:where(#wqbnlecotb) .gt_center {
+  text-align: center;
+}
+
+:where(#wqbnlecotb) .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+:where(#wqbnlecotb) .gt_font_normal {
+  font-weight: normal;
+}
+
+:where(#wqbnlecotb) .gt_font_bold {
+  font-weight: bold;
+}
+
+:where(#wqbnlecotb) .gt_font_italic {
+  font-style: italic;
+}
+
+:where(#wqbnlecotb) .gt_super {
+  font-size: 65%;
+}
+
+:where(#wqbnlecotb) .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 75%;
+  vertical-align: 0.4em;
+}
+
+:where(#wqbnlecotb) .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+:where(#wqbnlecotb) .gt_indent_1 {
+  text-indent: 5px;
+}
+
+:where(#wqbnlecotb) .gt_indent_2 {
+  text-indent: 10px;
+}
+
+:where(#wqbnlecotb) .gt_indent_3 {
+  text-indent: 15px;
+}
+
+:where(#wqbnlecotb) .gt_indent_4 {
+  text-indent: 20px;
+}
+
+:where(#wqbnlecotb) .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table">
+  <thead class="gt_header">
+    <tr>
+      <td colspan="5" class="gt_heading gt_title gt_font_normal" style="font-family: 'Libre Franklin'; font-weight: 800;">The most common unisex names in America</td>
+    </tr>
+    <tr>
+      <td colspan="5" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border" style="">Names for which at least one-third of recipients were male and at least one-third were female, through 2013</td>
+    </tr>
+  </thead>
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="color: #A9A9A9; font-family: 'Source Sans Pro'; text-transform: uppercase;" scope="col" id=" "> </th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" style="color: #A9A9A9; font-family: 'Source Sans Pro'; text-transform: uppercase;" scope="col" id="Name">Name</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="color: #A9A9A9; font-family: 'Source Sans Pro'; text-transform: uppercase;" scope="col" id="Estimated people with name">Estimated people with name</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="color: #A9A9A9; font-family: 'Source Sans Pro'; text-transform: uppercase;" scope="col" id="Male share">Male share</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="color: #A9A9A9; font-family: 'Source Sans Pro'; text-transform: uppercase;" scope="col" id="Female share">Female share</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">1</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Casey</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">176,544</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.5842866</td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.4157134</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">2</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Riley</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">154,861</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.5076391</td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.4923609</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">3</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Jessie</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">136,382</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.4778343</td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.5221657</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">4</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Jackie</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">132,929</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.4211326</td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.5788674</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">5</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Avery</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">121,797</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.3352131</td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.6647869</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">6</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Jaime</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">109,870</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.5617929</td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.4382071</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">7</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Peyton</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">94,896</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.4337194</td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.5662806</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">8</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Kerry</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">88,964</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.4839488</td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.5160512</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">9</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Jody</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">80,401</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.3520680</td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.6479320</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">10</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Kendall</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">79,211</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.3723667</td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.6276333</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">11</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Payton</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">64,152</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.3343577</td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.6656423</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">12</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Skyler</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">53,486</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.6460531</td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.3539469</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">13</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Frankie</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">51,288</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.6236713</td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.3763287</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">14</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Pat</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">44,782</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.3690344</td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.6309656</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">15</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Quinn</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">41,921</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.6357419</td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.3642581</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">16</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Harley</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">41,238</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.5717018</td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.4282982</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">17</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Reese</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">36,361</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.3619103</td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.6380897</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">18</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Robbie</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">32,636</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.5531569</td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.4468431</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">19</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Tommie</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">29,529</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.6644377</td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.3355623</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">20</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Justice</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">27,351</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.5281950</td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.4718050</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="step-6-incorporating-a-bar-plot-into-the-table" class="level4">
+<h4 class="anchored" data-anchor-id="step-6-incorporating-a-bar-plot-into-the-table">Step 6: Incorporating a bar plot into the table</h4>
+<p>We will use the <code>gt_plt_bar_stack</code> function to incorporate bar plots representing the proportion of females and the proportion of males with each of the top 20 names.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gt_plt_bar</span>(</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>tab,</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="at">column =</span> male_share,</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="at">color =</span> <span class="st">"blue"</span>,</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="at">keep_column =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="at">width =</span> <span class="dv">70</span>,</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="at">scale_type =</span> <span class="st">"none"</span>,</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="at">text_color =</span> <span class="st">"white"</span></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div id="hjundyytsc" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+:where(#hjundyytsc) .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+:where(#hjundyytsc) .gt_heading {
+  background-color: #FFFFFF;
+  text-align: left;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#hjundyytsc) .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+:where(#hjundyytsc) .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+:where(#hjundyytsc) .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+:where(#hjundyytsc) .gt_bottom_border {
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+:where(#hjundyytsc) .gt_col_headings {
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: none;
+  border-bottom-width: 1px;
+  border-bottom-color: #334422;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#hjundyytsc) .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 12px;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+:where(#hjundyytsc) .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 12px;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+:where(#hjundyytsc) .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+:where(#hjundyytsc) .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+:where(#hjundyytsc) .gt_column_spanner {
+  border-bottom-style: none;
+  border-bottom-width: 1px;
+  border-bottom-color: #334422;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+:where(#hjundyytsc) .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+:where(#hjundyytsc) .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+:where(#hjundyytsc) .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+:where(#hjundyytsc) .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+:where(#hjundyytsc) .gt_row {
+  padding-top: 7px;
+  padding-bottom: 7px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+:where(#hjundyytsc) .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#hjundyytsc) .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+:where(#hjundyytsc) .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+:where(#hjundyytsc) .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#hjundyytsc) .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+:where(#hjundyytsc) .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+:where(#hjundyytsc) .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+:where(#hjundyytsc) .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#hjundyytsc) .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+:where(#hjundyytsc) .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+:where(#hjundyytsc) .gt_table_body {
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #FFFFFF;
+}
+
+:where(#hjundyytsc) .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#hjundyytsc) .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#hjundyytsc) .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#hjundyytsc) .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#hjundyytsc) .gt_left {
+  text-align: left;
+}
+
+:where(#hjundyytsc) .gt_center {
+  text-align: center;
+}
+
+:where(#hjundyytsc) .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+:where(#hjundyytsc) .gt_font_normal {
+  font-weight: normal;
+}
+
+:where(#hjundyytsc) .gt_font_bold {
+  font-weight: bold;
+}
+
+:where(#hjundyytsc) .gt_font_italic {
+  font-style: italic;
+}
+
+:where(#hjundyytsc) .gt_super {
+  font-size: 65%;
+}
+
+:where(#hjundyytsc) .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 75%;
+  vertical-align: 0.4em;
+}
+
+:where(#hjundyytsc) .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+:where(#hjundyytsc) .gt_indent_1 {
+  text-indent: 5px;
+}
+
+:where(#hjundyytsc) .gt_indent_2 {
+  text-indent: 10px;
+}
+
+:where(#hjundyytsc) .gt_indent_3 {
+  text-indent: 15px;
+}
+
+:where(#hjundyytsc) .gt_indent_4 {
+  text-indent: 20px;
+}
+
+:where(#hjundyytsc) .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table">
+  <thead class="gt_header">
+    <tr>
+      <td colspan="5" class="gt_heading gt_title gt_font_normal" style="font-family: 'Libre Franklin'; font-weight: 800;">The most common unisex names in America</td>
+    </tr>
+    <tr>
+      <td colspan="5" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border" style="">Names for which at least one-third of recipients were male and at least one-third were female, through 2013</td>
+    </tr>
+  </thead>
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="color: #A9A9A9; font-family: 'Source Sans Pro'; text-transform: uppercase;" scope="col" id=" "> </th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" style="color: #A9A9A9; font-family: 'Source Sans Pro'; text-transform: uppercase;" scope="col" id="Name">Name</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="color: #A9A9A9; font-family: 'Source Sans Pro'; text-transform: uppercase;" scope="col" id="Estimated people with name">Estimated people with name</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="color: #A9A9A9; font-family: 'Source Sans Pro'; text-transform: uppercase;" scope="col" id="Male share">Male share</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="color: #A9A9A9; font-family: 'Source Sans Pro'; text-transform: uppercase;" scope="col" id="Female share">Female share</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">1</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Casey</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">176,544</td>
+<td headers="male_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="151.39" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #0000FF;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.4157134</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">2</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Riley</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">154,861</td>
+<td headers="male_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="131.53" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #0000FF;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.4923609</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">3</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Jessie</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">136,382</td>
+<td headers="male_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="123.81" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #0000FF;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.5221657</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">4</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Jackie</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">132,929</td>
+<td headers="male_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="109.11" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #0000FF;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.5788674</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">5</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Avery</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">121,797</td>
+<td headers="male_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="86.85" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #0000FF;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.6647869</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">6</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Jaime</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">109,870</td>
+<td headers="male_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="145.56" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #0000FF;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.4382071</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">7</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Peyton</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">94,896</td>
+<td headers="male_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="112.38" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #0000FF;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.5662806</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">8</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Kerry</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">88,964</td>
+<td headers="male_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="125.39" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #0000FF;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.5160512</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">9</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Jody</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">80,401</td>
+<td headers="male_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="91.22" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #0000FF;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.6479320</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">10</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Kendall</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">79,211</td>
+<td headers="male_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="96.48" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #0000FF;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.6276333</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">11</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Payton</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">64,152</td>
+<td headers="male_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="86.63" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #0000FF;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.6656423</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">12</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Skyler</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">53,486</td>
+<td headers="male_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="167.39" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #0000FF;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.3539469</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">13</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Frankie</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">51,288</td>
+<td headers="male_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="161.59" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #0000FF;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.3763287</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">14</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Pat</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">44,782</td>
+<td headers="male_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="95.62" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #0000FF;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.6309656</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">15</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Quinn</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">41,921</td>
+<td headers="male_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="164.72" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #0000FF;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.3642581</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">16</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Harley</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">41,238</td>
+<td headers="male_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="148.13" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #0000FF;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.4282982</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">17</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Reese</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">36,361</td>
+<td headers="male_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="93.77" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #0000FF;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.6380897</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">18</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Robbie</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">32,636</td>
+<td headers="male_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="143.32" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #0000FF;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.4468431</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">19</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Tommie</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">29,529</td>
+<td headers="male_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="172.15" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #0000FF;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.3355623</td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">20</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Justice</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">27,351</td>
+<td headers="male_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="136.85" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #0000FF;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td>
+<td headers="female_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.4718050</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gt_plt_bar</span>(</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>tab,</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="at">column =</span> female_share,</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="at">color =</span> <span class="st">"orange"</span>,</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="at">keep_column =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="at">width =</span> <span class="dv">70</span>,</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="at">scale_type =</span> <span class="st">"none"</span>,</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="at">text_color =</span> <span class="st">"white"</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div id="zhmzhysykz" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+:where(#zhmzhysykz) .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+:where(#zhmzhysykz) .gt_heading {
+  background-color: #FFFFFF;
+  text-align: left;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#zhmzhysykz) .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+:where(#zhmzhysykz) .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+:where(#zhmzhysykz) .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+:where(#zhmzhysykz) .gt_bottom_border {
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+:where(#zhmzhysykz) .gt_col_headings {
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: none;
+  border-bottom-width: 1px;
+  border-bottom-color: #334422;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#zhmzhysykz) .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 12px;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+:where(#zhmzhysykz) .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 12px;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+:where(#zhmzhysykz) .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+:where(#zhmzhysykz) .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+:where(#zhmzhysykz) .gt_column_spanner {
+  border-bottom-style: none;
+  border-bottom-width: 1px;
+  border-bottom-color: #334422;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+:where(#zhmzhysykz) .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+:where(#zhmzhysykz) .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+:where(#zhmzhysykz) .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+:where(#zhmzhysykz) .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+:where(#zhmzhysykz) .gt_row {
+  padding-top: 7px;
+  padding-bottom: 7px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+:where(#zhmzhysykz) .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#zhmzhysykz) .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+:where(#zhmzhysykz) .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+:where(#zhmzhysykz) .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#zhmzhysykz) .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+:where(#zhmzhysykz) .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+:where(#zhmzhysykz) .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+:where(#zhmzhysykz) .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#zhmzhysykz) .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+:where(#zhmzhysykz) .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+:where(#zhmzhysykz) .gt_table_body {
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #FFFFFF;
+}
+
+:where(#zhmzhysykz) .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#zhmzhysykz) .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#zhmzhysykz) .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#zhmzhysykz) .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#zhmzhysykz) .gt_left {
+  text-align: left;
+}
+
+:where(#zhmzhysykz) .gt_center {
+  text-align: center;
+}
+
+:where(#zhmzhysykz) .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+:where(#zhmzhysykz) .gt_font_normal {
+  font-weight: normal;
+}
+
+:where(#zhmzhysykz) .gt_font_bold {
+  font-weight: bold;
+}
+
+:where(#zhmzhysykz) .gt_font_italic {
+  font-style: italic;
+}
+
+:where(#zhmzhysykz) .gt_super {
+  font-size: 65%;
+}
+
+:where(#zhmzhysykz) .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 75%;
+  vertical-align: 0.4em;
+}
+
+:where(#zhmzhysykz) .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+:where(#zhmzhysykz) .gt_indent_1 {
+  text-indent: 5px;
+}
+
+:where(#zhmzhysykz) .gt_indent_2 {
+  text-indent: 10px;
+}
+
+:where(#zhmzhysykz) .gt_indent_3 {
+  text-indent: 15px;
+}
+
+:where(#zhmzhysykz) .gt_indent_4 {
+  text-indent: 20px;
+}
+
+:where(#zhmzhysykz) .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table">
+  <thead class="gt_header">
+    <tr>
+      <td colspan="5" class="gt_heading gt_title gt_font_normal" style="font-family: 'Libre Franklin'; font-weight: 800;">The most common unisex names in America</td>
+    </tr>
+    <tr>
+      <td colspan="5" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border" style="">Names for which at least one-third of recipients were male and at least one-third were female, through 2013</td>
+    </tr>
+  </thead>
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="color: #A9A9A9; font-family: 'Source Sans Pro'; text-transform: uppercase;" scope="col" id=" "> </th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" style="color: #A9A9A9; font-family: 'Source Sans Pro'; text-transform: uppercase;" scope="col" id="Name">Name</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="color: #A9A9A9; font-family: 'Source Sans Pro'; text-transform: uppercase;" scope="col" id="Estimated people with name">Estimated people with name</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="color: #A9A9A9; font-family: 'Source Sans Pro'; text-transform: uppercase;" scope="col" id="Male share">Male share</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="color: #A9A9A9; font-family: 'Source Sans Pro'; text-transform: uppercase;" scope="col" id="Female share">Female share</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">1</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Casey</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">176,544</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.5842866</td>
+<td headers="female_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="107.52" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFA500;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">2</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Riley</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">154,861</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.5076391</td>
+<td headers="female_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="127.34" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFA500;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">3</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Jessie</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">136,382</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.4778343</td>
+<td headers="female_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="135.05" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFA500;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">4</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Jackie</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">132,929</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.4211326</td>
+<td headers="female_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="149.71" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFA500;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">5</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Avery</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">121,797</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.3352131</td>
+<td headers="female_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="171.93" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFA500;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">6</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Jaime</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">109,870</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.5617929</td>
+<td headers="female_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="113.33" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFA500;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">7</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Peyton</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">94,896</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.4337194</td>
+<td headers="female_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="146.46" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFA500;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">8</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Kerry</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">88,964</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.4839488</td>
+<td headers="female_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="133.47" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFA500;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">9</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Jody</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">80,401</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.3520680</td>
+<td headers="female_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="167.57" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFA500;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">10</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Kendall</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">79,211</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.3723667</td>
+<td headers="female_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="162.32" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFA500;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">11</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Payton</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">64,152</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.3343577</td>
+<td headers="female_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="172.15" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFA500;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">12</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Skyler</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">53,486</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.6460531</td>
+<td headers="female_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="91.54" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFA500;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">13</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Frankie</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">51,288</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.6236713</td>
+<td headers="female_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="97.33" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFA500;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">14</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Pat</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">44,782</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.3690344</td>
+<td headers="female_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="163.19" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFA500;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">15</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Quinn</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">41,921</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.6357419</td>
+<td headers="female_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="94.21" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFA500;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">16</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Harley</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">41,238</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.5717018</td>
+<td headers="female_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="110.77" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFA500;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">17</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Reese</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">36,361</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.3619103</td>
+<td headers="female_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="165.03" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFA500;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">18</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Robbie</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">32,636</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.5531569</td>
+<td headers="female_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="115.57" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFA500;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">19</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Tommie</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">29,529</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.6644377</td>
+<td headers="female_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="86.79" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFA500;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td></tr>
+    <tr><td headers="popularity_rank" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">20</td>
+<td headers="name" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">Justice</td>
+<td headers="total" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">27,351</td>
+<td headers="male_share" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">0.5281950</td>
+<td headers="female_share" class="gt_row gt_left" style="font-family: 'Source Sans Pro'; font-weight: 400;"><!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs>  <style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs>  <clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==">    <rect x="0.00" y="0.00" width="198.43" height="14.17"></rect>  </clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="8.78" y="1.77" width="122.02" height="10.63" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFA500;"></rect><line x1="8.78" y1="14.17" x2="8.78" y2="0.0000000000000018" style="stroke-width: 2.13; stroke-linecap: butt;"></line></g></svg></td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+<pre><code></code></pre>
+<p>Unfortunately this does not give us the percentages in one clean table, but I had a very hard time finding good examples of how to correct this so I am stuck at this one point. If anyone has any suggestions of things to try please let me know!</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

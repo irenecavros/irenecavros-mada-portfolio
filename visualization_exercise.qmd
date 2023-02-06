@@ -5,4 +5,151 @@ output:
     toc: FALSE
 ---
 
-Placeholder file for the future visualization exercise.
+#### DataViz inspiration
+
+The data I selected for this exercise in reproducing a visualization comes from the FiveThirtyEight story [The Most Common Unisex Names In America: Is Yours One Of Them?](http://fivethirtyeight.com/features/there-are-922-unisex-names-in-america-is-yours-one-of-them) The dataset looks the most common unisex names in America through the year 2013, using data from the Social Security Administration.
+
+![](common.unisex.names.png){fig-align="center"}
+
+I liked the way this visualization looked because it had a bar graph element which looked embedded into a table. I had to do a little digging online because I was not really familiar with how to do something like this in `ggplot2` or any other package, but I did my best to get as close as possible to the final product on the FiveThirtyEight article. Below are the steps I followed to achieve my result!
+
+#### Step 1: Install and loading packages
+
+```{r}
+options(repos = list(CRAN="http://cran.rstudio.com/"))
+
+#install
+install.packages("gt") 
+install.packages("gtExtras")
+
+#load
+require(readr)
+require(dplyr)
+require(ggplot2)
+require(tidyverse)
+require(gt)
+require(gtExtras)
+```
+
+#### Step 2: Data import
+
+```{r}
+unisex_names_table <- read_csv("data/unisex_names_table.csv")
+```
+
+The data in `unisex_names_table.csv` contains the over 900 names given to each sex at least one-third of the time and with a minimum of 100 people. It has the following variables:
+
+| Header         | Definition                                                                                           |
+|---------------|---------------------------------------------------------|
+| `name`         | First names from the [Social Security Administration](http://www.ssa.gov/oact/babynames/limits.html) |
+| `total`        | Total number of living Americans with the name                                                       |
+| `male_share`   | Percentage of people with the name who are male                                                      |
+| `female_share` | Percentage of people with the name who are female                                                    |
+| `gap`          | Gap between male_share and female_share                                                              |
+
+#### Step 3: Filtering for the data of interest
+
+Since the visualization only looks at the 20 most popular unisex names, we want to exclude the rest of the names from the dataset that are less popular. Before we do that, let's do some data wrangling to make things a bit easier and create a duplicate dataset called `data`. In terms of data wrangling, the main thing I want to do is change the variable name of the first column because currently it is `…1`, which could cause some errors or confusion. So let's change it to `popularity_rank` since it tells us how each name ranks in its overall frequency.
+
+```{r}
+unisex_names_table <- as.data.frame(unisex_names_table)
+data <- unisex_names_table 
+data <- data.frame(data) 
+colnames(data)[colnames(data) == "...1"] = "popularity_rank"
+```
+
+Since we are only interested in the top 20 most popular names, we can get rid of all of the less popular names.
+
+```{r}
+top20 <- data %>% filter(popularity_rank <= 20)
+```
+
+I'm also going to drop the gap variable since it will not be a part of this visualization.
+
+```{r}
+top20_nogap <- top20 %>%
+    select(popularity_rank, name, total, male_share, female_share)
+```
+
+#### Step 4: Ensuring variables are being read by R as the correct type
+
+```{r}
+top20_nogap <- as.data.frame(top20_nogap)
+  top20_nogap$popularity_rank <- as.numeric(top20_nogap$popularity_rank)
+  top20_nogap$name <- as.factor(top20_nogap$name)
+  top20_nogap$total <- as.numeric(top20_nogap$total)
+  top20_nogap$male_share <- as.numeric(top20_nogap$male_share)
+  top20_nogap$female_share <- as.numeric(top20_nogap$female_share)
+```
+
+This step is just to ensure that the variables that are numeric are being read as numeric and the variables that are characters are read as characters.
+
+#### Step 5: Creating a gt table
+
+The `gt` extension is used in order to produce high quality tables. The `gtExtras` extension adds even more functionality so that we can make are table look as much like the example as possible. Let's call our table `tab`.
+
+```{r}
+tab <- top20_nogap %>%
+  gt()
+
+tab <- tab %>% 
+  #add title and subtitle
+  tab_header(
+    title = "The most common unisex names in America",
+    subtitle = md("Names for which at least one-third of recipients were male and at least one-third were female, through 2013")
+  )
+
+tab
+```
+
+#### Step 5: Tweaking our gt table formatting
+
+Now that we have created a first draft of the table with a title and subtitle that matches our example, let's make some more changes. First, let's get the text in an NYT theme so it looks article ready. Second, we want to get rid of all of the decimal places for values under the column titled 'total.' This led me to realize I needed to change some column names so that they matched, so that is our last step here.
+
+```{r}
+tab <- tab %>%
+  gtExtras::gt_theme_nytimes() %>% #nyt theme
+  fmt_number(
+    columns = total,
+    decimals = 0) %>% #remove decimal places
+  cols_label(
+    popularity_rank = " ", #change column names to match example
+    name = "Name", 
+    total = "Estimated people with name", #change name to match 
+    male_share = "Male share", 
+    female_share = "Female share")
+
+tab
+  
+```
+
+#### Step 6: Incorporating a bar plot into the table
+
+We will use the `gt_plt_bar_stack` function to incorporate bar plots representing the proportion of females and the proportion of males with each of the top 20 names.
+
+```{r}
+gt_plt_bar(
+tab,
+column = male_share,
+color = "blue",
+keep_column = FALSE,
+width = 70,
+scale_type = "none",
+text_color = "white"
+)
+
+gt_plt_bar(
+tab,
+column = female_share,
+color = "orange",
+keep_column = FALSE,
+width = 70,
+scale_type = "none",
+text_color = "white"
+)
+```
+
+```{}
+```
+
+Unfortunately this does not give us the percentages in one clean table, but I had a very hard time finding good examples of how to correct this so I am stuck at this one point. If anyone has any suggestions of things to try please let me know!
