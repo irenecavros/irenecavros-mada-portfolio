@@ -128,6 +128,7 @@ tab
 We will use the `gt_plt_bar_stack` function to incorporate bar plots representing the proportion of females and the proportion of males with each of the top 20 names.
 
 ```{r}
+#male share
 gt_plt_bar(
 tab,
 column = male_share,
@@ -138,6 +139,10 @@ scale_type = "none",
 text_color = "white"
 )
 
+```
+
+```{r}
+#female share
 gt_plt_bar(
 tab,
 column = female_share,
@@ -148,5 +153,6 @@ scale_type = "none",
 text_color = "white"
 )
 ```
+
 
 Unfortunately this does not give us the percentages in one clean table, as in the example visualization. My best resource in this exercise came from an example I found on [this website](https://bjnnowak.netlify.app/2021/10/04/r-beautiful-tables-with-gt-and-gtextras/) but it didn't quite get me to the finish line, so I kept looking for other examples. I had a very hard time, so I am still stuck at this point, but if anyone has any suggestions of things to try please let me know!
