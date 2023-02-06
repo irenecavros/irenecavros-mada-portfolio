@@ -149,4 +149,4 @@ text_color = "white"
 )
 ```
 
-Unfortunately this does not give us the percentages in one clean table, but I had a very hard time finding good examples of how to correct this so I am stuck at this one point. If anyone has any suggestions of things to try please let me know!
+Unfortunately this does not give us the percentages in one clean table, as in the example visualization. My best resource in this exercise came from an example I found on [this website](https://bjnnowak.netlify.app/2021/10/04/r-beautiful-tables-with-gt-and-gtextras/) but it didn't quite get me to the finish line, so I kept looking for other examples. I had a very hard time, so I am still stuck at this point, but if anyone has any suggestions of things to try please let me know!
