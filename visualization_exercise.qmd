@@ -21,6 +21,7 @@ options(repos = list(CRAN="http://cran.rstudio.com/"))
 #install
 install.packages("gt") 
 install.packages("gtExtras")
+install.packages("svglite")
 
 #load
 require(readr)
@@ -29,6 +30,7 @@ require(ggplot2)
 require(tidyverse)
 require(gt)
 require(gtExtras)
+require(svglite)
 ```
 
 #### Step 2: Data import
@@ -125,7 +127,7 @@ tab
 
 #### Step 6: Incorporating a bar plot into the table
 
-We will use the `gt_plt_bar_stack` function to incorporate bar plots representing the proportion of females and the proportion of males with each of the top 20 names.
+We will use the `gt_plt_bar` function to incorporate bar plots representing the proportion of females and the proportion of males with each of the top 20 names.
 
 ```{r}
 #male share
@@ -155,4 +157,4 @@ text_color = "white"
 ```
 
 
-Unfortunately this does not give us the percentages in one clean table, as in the example visualization. My best resource in this exercise came from an example I found on [this website](https://bjnnowak.netlify.app/2021/10/04/r-beautiful-tables-with-gt-and-gtextras/) but it didn't quite get me to the finish line, so I kept looking for other examples. I had a very hard time, so I am still stuck at this point, but if anyone has any suggestions of things to try please let me know!
+Unfortunately this does not give us the percentages in one clean table, as in the example visualization. I played around with `gt_plt_bar_stack` to try and get one stacked plot vs. two separate ones but did not have any luck so I ended up only using `gt_plt_bar.` My best resource in this exercise came from an example I found on [this website](https://bjnnowak.netlify.app/2021/10/04/r-beautiful-tables-with-gt-and-gtextras/) but it didn't quite get me to the finish line, so I kept looking for other examples. I had a very hard time, so I am still stuck at this point, but if anyone has any suggestions of things to try please let me know!
