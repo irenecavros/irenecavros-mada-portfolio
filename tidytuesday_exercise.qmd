@@ -5,4 +5,121 @@ output:
     toc: FALSE
 ---
 
-Placeholder file for the future Tidy Tuesday exercise.
+#### Introduction
+
+This week's data was all about the age difference in years between Hollywood movie love interests. More information on the data can be found at the [Hollywood Age Gap website](https://hollywoodagegap.com/) via [Data Is Plural](https://www.data-is-plural.com/archive/2018-02-07-edition/).
+
+#### Load packages
+
+```{r}
+library('tidyverse')
+library('readr')
+library('ggplot2')
+library("dplyr")
+library('lubridate')
+library("cowplot")
+library("plotly")
+library("forcats")
+library("emoji")
+```
+
+#### Get the data
+
+```{r}
+library(tidytuesdayR) #read in `tidytuesdayR`
+tuesdata <- tidytuesdayR::tt_load('2023-02-14') #load in readme and datasets for this week
+tuesdata <- tidytuesdayR::tt_load(2023, week = 7) 
+age_gaps <- tuesdata$age_gaps
+```
+
+#### Initial data exploration
+
+Summary statistics for each variable
+
+```{r}
+summary(age_gaps)
+```
+
+Look at variable types
+
+```{r}
+str(age_gaps)
+```
+
+Table of `age_gaps` data
+
+```{r}
+head(age_gaps)
+```
+
+#### Analysis ideas
+
+Based on my initial exploration, I came up with a few ideas for potentially interesting research questions:
+
+1.  Are there trends in time when we look at age gap? For example, has the gap widened or narrowed over time?
+2.  How do the data look if we were to look at age gaps by director?
+3.  How do the age gaps look if we were to compare films where actor 1 (the older actor) was female versus films where actor 1 was male
+
+#### Duplicating dataset
+
+Before I do any manipulating, I will duplicate the original `age_gaps` dataset into a new dataset titled `data.`
+
+```{r}
+data <- age_gaps
+```
+
+#### Trends in time
+
+Let's try and do a historical analysis of age differences based on the year each film was released.
+
+```{r}
+plot(data$release_year, data$age_difference)
+```
+
+This is a bit difficult to discern any information or conclusions from, other than it appears that the number of movies produced each year has increased!
+
+Let's see if we can take an average of the age gaps for each year and create a better plot.
+
+This first step will create a new data frame with each year and the average age gap for that year. Not all years are represented in the dataset of movies, so there are some years which do not appear in the table.
+
+```{r}
+gap_byyear <- data %>%
+  group_by(release_year) %>%
+  summarise_at(vars(age_difference), list(year_meandiff = mean))
+gap_byyear
+```
+
+Now let's try plotting again using the average age difference for each year rather than a having a data point for each film in that year.
+
+```{r}
+ggplot(gap_byyear, aes(x = release_year, y = year_meandiff)) +
+  geom_line () + 
+  theme_classic()
+```
+
+Here we can see the data as box plot visualization:
+
+```{r}
+boxplot(age_difference ~ release_year, data = data)
+```
+
+#### `age_gaps` by director
+
+Let's do something similar to what we did above by calculating average age gaps for each year, but this time we can do it by director.
+
+```{r}
+gap_bydirector <- data %>%
+  group_by(director) %>%
+  summarise_at(vars(age_difference), list(director_meandiff = mean))
+gap_bydirector
+```
+
+From here let's just take the top 10 directors with the highest age gap and create a bar plot of their average age gap.
+
+```{r}
+top10_directors <-  gap_bydirector %>% 
+  top_n(10)
+ggplot(top10_directors, aes(x = director_meandiff, y = director)) +
+  geom_col () + 
+  theme_classic()
+```
