@@ -13,14 +13,12 @@ This week's data was all about the age difference in years between Hollywood mov
 
 ```{r}
 library('tidyverse')
-library('readr')
 library('ggplot2')
 library("dplyr")
 library('lubridate')
 library("cowplot")
 library("plotly")
 library("forcats")
-library("emoji")
 ```
 
 #### Get the data
