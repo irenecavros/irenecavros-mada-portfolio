@@ -25,7 +25,6 @@ Note: the file we want to work with is actually an RDS file/object, not an RData
 
 ```{r}
 data <- readRDS(here("fluanalysis", "data", "SympAct_Any_Pos.Rda"))
-data
 ```
 
 #### Remove all variables that have Score or Total or FluA or FluB or Dxname or Activity in their name.
@@ -54,7 +53,6 @@ There aren't many.
 
 ```{r}
 cleandata<- na.omit(df2)
-cleandata
 ```
 
 #### Saving the cleaned data

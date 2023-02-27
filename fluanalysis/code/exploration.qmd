@@ -28,7 +28,6 @@ library(tidymodels) #for modeling
 ```{r}
 #Path to data. Note the use of the here() package and not absolute paths
 cleandata <- readRDS(here("fluanalysis", "data", "cleandata.rds"))
-cleandata
 ```
 #### Look at variable types
 ```{r}
