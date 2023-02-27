@@ -1,0 +1,155 @@
+---
+title: "Module 8 Exploration"
+output: html_document
+---
+
+This Quarto file loads the cleaned data and does some exploring.
+
+As part of the exploratory analysis, this code produces plots, tables, and other summary quantities for some interesting aspects of our data
+
+#### Load packages
+
+```{r}
+library(tidyverse) #for transforming data
+library(here) #to set paths for data loading/saving
+library(dplyr) #for data processing/cleaning
+library(tidyr) #for data processing/cleaning
+library(gtsummary) #for summarizing data
+library(forcats) #for working with categorical variables
+library(ggplot2) #for nice plots
+library(cowplot) #addon to ggplot for nice plots
+library(skimr) #for nice visualization of data 
+library(tidymodels) #for modeling
+
+```
+
+####Load the data
+
+```{r}
+#Path to data. Note the use of the here() package and not absolute paths
+cleandata <- readRDS(here("fluanalysis", "data", "cleandata.rds"))
+cleandata
+```
+#### Look at variable types
+```{r}
+str(cleandata)
+```
+
+#### Produce and save a summary table.
+
+This also helps us get things into the shape of a data frame (for easier saving)
+
+```{r}
+# looking at the data
+summary_df <- dplyr::glimpse(cleandata)
+# save to file
+summarytable_file = here("fluanalysis", "data", "summarytable.rds")
+saveRDS(summary_df, file = summarytable_file)
+```
+
+#### Outcomes of interest
+
+For our further analysis, we decide that our main continuous outcome of interest is **Body temperature**, and our main categorical outcome is **Nausea**. We want to see if the other symptoms are correlated with (predict) those outcomes.
+
+```{r}
+summary(cleandata)
+```
+
+Let's produce and print some summary output with a smaller subset of variables. 
+
+```{r}
+# make subset with a few variables to summarize
+subset <- cleandata %>% select(BodyTemp, SwollenLymphNodes, ChillsSweats, AbPain, Diarrhea, Nausea, Vomit)
+
+# summarize the data
+subsettable <- 
+  tbl_summary(subset)
+subsettable
+```
+
+#### Outcome of interest #1: Body temperature
+
+Since body temperature is continuous, let's create a histogram/density plot.
+
+```{r}
+p1 <- ggplot(subset, aes(BodyTemp)) + 
+  geom_density() + 
+  labs(title = "Body Temperature Density", x = "Body Temperature (Farenheit)", y = "Density") + scale_fill_discrete(labels=c('No', 'Yes')) + theme_classic()
+
+p1
+```
+This tells us the frequency of body temperatures in the dataset. 
+
+Let's create some boxplots including this outcome and the shortlist of independent variables/predictors we have chosen.
+
+```{r}
+#boxplot of BodyTemp x SwollenLymphNodes
+p2 <- ggplot(subset, aes(x=BodyTemp, y=SwollenLymphNodes)) + 
+  geom_boxplot(fill = "gray") +
+  labs(title = "BodyTemp x SwollenLymphNodes", x = "Body Temperature (Farenheit)", y = "Swollen Lymph Nodes") + scale_fill_discrete(labels=c('No', 'Yes')) + theme_classic()
+
+p2
+```
+Based on this plot, it looks like the average body temperature among those without swollen lymph nodes looks marginally higher with a larger spread. This doesn't really point to anything too interesting so let's try chills. 
+
+```{r}
+#boxplot of BodyTemp x ChillsSweats
+p3 <- ggplot(subset, aes(x=BodyTemp, y=ChillsSweats)) + 
+  geom_boxplot(fill = "gray") +
+  labs(title = "BodyTemp x ChillsSweats", x = "Body Temperature (Farenheit)", y = "Experienced Chills or Sweats") + scale_fill_discrete(labels=c('No', 'Yes')) + theme_classic()
+
+p3
+```
+In this plot, the mean body temperature among those who experienced chills or sweating appears about a half degree higher than those without, and the spread is larger as well. This could potentially be interesting, but let's do a few more plots to look at the nausea outcome as well. 
+
+For now, let's use nausea as a predictor and keep bodytemp as the outcome. 
+
+```{r}
+#boxplot of BodyTemp x Nausea
+p4 <- ggplot(subset, aes(x=BodyTemp, y=Nausea)) + 
+  geom_boxplot(fill = "gray") +
+  labs(title = "BodyTemp x Nausea", x = "Body Temperature (Farenheit)", y = "Nausea") + scale_fill_discrete(labels=c('No', 'Yes')) + theme_classic()
+
+p4
+```
+Nothing appears too interesting here. 
+
+####  Outcome of interest #2: Nausea
+
+Next let's make nausea the outcome of interest. We can create some plots for this outcome and a few independent variables/predictors.
+
+```{r}
+#plot of Nausea x AbPain
+NauAb <- data.frame(table(subset$Nausea,subset$AbPain))
+names(NauAb) <- c("Nausea","AbPain","Count")
+
+p5<- ggplot(data=NauAb, aes(x=Nausea, y=Count, fill=AbPain)) + geom_bar(stat="identity")
+p5
+```
+Abdominal pain looks to be more common in those with nausea, than those without, which makes sense!
+
+```{r}
+#plot of Nausea x Diarrhea
+NauDi <- data.frame(table(subset$Nausea,subset$Diarrhea))
+names(NauDi) <- c("Nausea","Diarrhea","Count")
+
+p6<- ggplot(data=NauDi, aes(x=Nausea, y=Count, fill=Diarrhea)) + geom_bar(stat="identity")
+p6
+```
+Diarrhea also appears to be more frequent among those with nausea, which, again, is logical. 
+
+```{r}
+#plot of Nausea x Vomit
+NauVom <- data.frame(table(subset$Nausea,subset$Vomit))
+names(NauVom) <- c("Nausea","Vomit","Count")
+
+p7<- ggplot(data=NauVom, aes(x=Vomit, y=Count, fill=Nausea)) + geom_bar(stat="identity")
+p7
+```
+This time we changed the X axis so we are now looking at among those who vomited, how many had nausea and among those who did not vomit, how many had nausea? A large proportion of those who vomited also had nausea, which also makes sense. 
+
+
+
+
+
+

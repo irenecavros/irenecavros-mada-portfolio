@@ -1,0 +1,66 @@
+---
+title: "Module 8 Wrangling"
+output: 
+  html_document:
+    toc: FALSE
+---
+
+#### Introduction
+
+During the exercise for model 8, we will practice a bit of model fitting using the `tidymodels` framework.
+
+#### Load packages
+
+```{r}
+library('tidyverse') #for transforming data
+library('dplyr') #for data processing/cleaning
+library('tidyr') #for data processing/cleaning
+library('skimr') #for nice visualization of data 
+library('here') #to set paths
+```
+
+#### Get the data
+
+Note: the file we want to work with is actually an RDS file/object, not an RData/RDA file, despite the somewhat misleading .Rda file name ending. So you need to use the right function to load RDS files into R.
+
+```{r}
+data <- readRDS(here("fluanalysis", "data", "SympAct_Any_Pos.Rda"))
+data
+```
+
+#### Remove all variables that have Score or Total or FluA or FluB or Dxname or Activity in their name.
+
+Don't do this manually one by one, figure out how to use R commands that let you remove things in an efficient manner, using e.g., `contains()` or `starts_with()` from `dplyr`/`tidyselect`
+
+Also remove the variable `Unique.Visit.`
+
+```{r}
+data <- as.data.frame(data)
+df2 <- data %>% 
+    select(-contains('Score')) %>% #to remove variables containing xyz
+    select(-contains('Total')) %>%
+    select(-contains('FluA')) %>%
+    select(-contains('FluB')) %>%
+    select(-contains('Dxname')) %>%
+    select(-contains('Activity')) %>%
+    select(-c('Unique.Visit')) #to remove final variable 
+```
+
+We are now left with 32 variables coding for presence or absence of some symptom. Only one, temperature, is continuous. A few have multiple categories.
+
+#### Let's remove any NA observations
+
+There aren't many.
+
+```{r}
+cleandata<- na.omit(df2)
+cleandata
+```
+
+#### Saving the cleaned data
+
+```{r}
+save_data_location <- here::here("fluanalysis", "data", "cleandata.rds")
+saveRDS(cleandata, file = save_data_location)
+```
+
