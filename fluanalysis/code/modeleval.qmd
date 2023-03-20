@@ -1,0 +1,129 @@
+---
+title: "Module Evaluation"
+author: "Irene Cavros"
+format: html
+editor: visual
+---
+
+#### Load Packages
+
+```{r}
+library(here) #to set paths for data 
+library(skimr) #for summarizing data
+library(tidyverse) #for data processing
+library(tidymodels) #for modeling
+library(glmnet) #for modeling
+library(performance) #for modeling
+```
+
+#### Load Dataset
+
+```{r}
+#Path to data. 
+data_location <- here::here("fluanalysis","data","cleandata.rds")
+#load data
+mydata <- readRDS(data_location)
+```
+
+#### Data Summary
+
+Let's take a high-level look at the data before we start.
+
+```{r}
+head(mydata)
+skim(mydata)
+```
+
+#### Splitting data
+
+If nausea is our main categorical outcome, we can split data with the `Nausea` outcome evenly into testing and training datasets.
+
+```{r}
+set.seed(123)
+nausea_split=initial_split(mydata,strata = Nausea)
+nausea_train=training(nausea_split)
+nausea_test=testing(nausea_split)
+```
+
+#### Model 1 Evaluation
+
+Let's first use a tidymodels recipe to create a workflow that fits a logistic model using all predictors.
+
+```{r}
+nausea_rec=recipe(Nausea~.,data=nausea_train)
+lr_mod=logistic_reg()%>%
+  set_engine("glm")
+nausea_workflow=workflow()%>%
+  add_model(lr_mod)%>%
+  add_recipe(nausea_rec)
+nausea_workflow
+nausea_fit=nausea_workflow%>%
+  fit(data=nausea_train)
+nausea_fit%>%
+  extract_fit_parsnip()%>%
+  tidy()
+```
+
+Now let's look at the predictions, ROC curve, and ROC-AUC for the data.
+
+```{r}
+predict(nausea_fit,nausea_train)
+nausea_aug_train=augment(nausea_fit,nausea_train)
+nausea_aug_train%>%
+  roc_curve(truth=Nausea,.pred_No)%>%
+  autoplot()
+predict(nausea_fit,nausea_test)
+nausea_aug_test=augment(nausea_fit,nausea_test)
+nausea_aug_test%>%
+  roc_curve(truth=Nausea,.pred_No)%>%
+  autoplot()
+nausea_aug_train%>%
+  roc_auc(truth=Nausea,.pred_No)
+predict(nausea_fit,nausea_test)
+nausea_aug_test=augment(nausea_fit,nausea_test)
+nausea_aug_test%>%
+  roc_auc(truth=Nausea,.pred_No)
+```
+
+#### New Workflow for Alternative Model
+
+Now we will make a new workflow for an alternative model which uses the main predictor only (`RunnyNose`)
+
+```{r}
+set.seed(234)
+nausea_rec2=recipe(Nausea~RunnyNose,data=nausea_train)
+lr_mod=logistic_reg()%>%
+  set_engine("glm")
+nausea_workflow2=workflow()%>%
+  add_model(lr_mod)%>%
+  add_recipe(nausea_rec2)
+nausea_workflow
+nausea_fit2=nausea_workflow2%>%
+  fit(data=nausea_train)
+nausea_fit2%>%
+  extract_fit_parsnip()%>%
+  tidy()
+```
+
+Similar to how we did with the first model, let's use a tidymodels recipe to create a workflow that fits a logistic model for training data and testing data.
+
+```{r}
+predict(nausea_fit2,nausea_train)
+nausea_aug_train2=augment(nausea_fit2,nausea_train)
+nausea_aug_train2%>%
+  roc_curve(truth=Nausea,.pred_No)%>%
+  autoplot()
+predict(nausea_fit2,nausea_test)
+nausea_aug_test2=augment(nausea_fit2,nausea_test)
+nausea_aug_test2%>%
+  roc_curve(truth=Nausea,.pred_No)%>%
+  autoplot()
+nausea_aug_train2%>%
+  roc_auc(truth=Nausea,.pred_No)
+predict(nausea_fit2,nausea_test)
+nausea_aug_test2=augment(nausea_fit2,nausea_test)
+nausea_aug_test2%>%
+  roc_auc(truth=Nausea,.pred_No)
+```
+
+It looks like the model built and trained based on all predictors has a higher ROC_AUC than the alternative model.
