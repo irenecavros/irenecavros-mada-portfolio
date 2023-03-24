@@ -188,7 +188,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
  <span class="dropdown-text">Fitting</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../.././fluanalysis/code/fitting.html">
+    <a class="dropdown-item" href="../.././fluanalysis/code/modeleval.html">
  <span class="dropdown-text">Model Evaluation</span></a>
   </li>  
     </ul>
@@ -275,7 +275,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ✖ dplyr::lag()      masks stats::lag()
 ✖ yardstick::spec() masks readr::spec()
 ✖ recipes::step()   masks stats::step()
-• Learn how to get started at https://www.tidymodels.org/start/</code></pre>
+• Search for functions across packages at https://www.tidymodels.org/find/</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmnet) <span class="co">#for modeling</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
@@ -1022,10 +1022,10 @@ Computational engine: glm </code></pre>
 </div>
 </div>
 <p>It looks like the model built and trained based on all predictors has a higher ROC_AUC than the alternative model.</p>
-<p>************THIS SECTION ADDED BY SHIWANI SAPKOTA****************</p>
+<p>#************THIS SECTION ADDED BY SHIWANI SAPKOTA****************</p>
 </section>
-<section id="creating-sets-for-training-and-testing" class="level1">
-<h1>Creating sets for training and testing</h1>
+<section id="creating-sets-for-training-and-testing" class="level3">
+<h3 class="anchored" data-anchor-id="creating-sets-for-training-and-testing">Creating sets for training and testing</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Setting seed</span></span>
 <span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>

@@ -128,9 +128,9 @@ nausea_aug_test2%>%
 
 It looks like the model built and trained based on all predictors has a higher ROC_AUC than the alternative model.
 
-\*\*\*\*\*\*\*\*\*\*\*\*THIS SECTION ADDED BY SHIWANI SAPKOTA\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*
+#\*\*\*\*\*\*\*\*\*\*\*\*THIS SECTION ADDED BY SHIWANI SAPKOTA\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*
 
-# Creating sets for training and testing
+### Creating sets for training and testing
 
 ```{r}
 # Setting seed
