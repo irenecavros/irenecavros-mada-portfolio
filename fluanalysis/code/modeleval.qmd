@@ -127,3 +127,114 @@ nausea_aug_test2%>%
 ```
 
 It looks like the model built and trained based on all predictors has a higher ROC_AUC than the alternative model.
+
+************THIS SECTION ADDED BY SHIWANI SAPKOTA****************
+
+# Creating sets for training and testing
+
+```{r}
+# Setting seed
+set.seed(123)
+
+# Putting 3/4 of the data into the training set
+data_split_part2 <- initial_split(mydata, prop = 3/4)
+
+# Creating data frames for the two sets
+train_data_part2 <- training(data_split_part2)
+test_data_part2  <- testing(data_split_part2)
+```
+
+**FULL MODEL: USING BODY TEMPERATURE CONTINUOUS OUTCOME OF INTEREST AND ALL OTHER VARIABLES AS PREDICTORS**
+
+```{r}
+# Using Body Temperature as a continuous outcome of interest and all other variables as predictors
+flu_module10_rec_part2 <- recipe(BodyTemp ~ ., data = train_data_part2)
+
+# Fitting the linear model
+flu_module10_mod_part2 <- linear_reg() %>% 
+                    set_engine("lm")
+
+# Modelling workflow for pairing model and recipe 
+flu_module10_wflow_part2 <- workflow() %>% 
+  add_model(flu_module10_mod_part2) %>% 
+  add_recipe(flu_module10_rec_part2)
+flu_module10_wflow_part2
+
+# Using the resulting predictors for preparing recipe and training the model
+flu_module10_fit_part2 <- 
+ flu_module10_wflow_part2 %>% 
+  fit(data = train_data_part2)
+
+# Pulling the fitted model object and using tidy() function for getting a tidy tibble of model coefficients
+flu_module10_fit_part2 %>% 
+  extract_fit_parsnip() %>% 
+  tidy()
+```
+
+**FULL MODEL: USING TRAINED WORKFLOW TO PREDICT**
+
+```{r, warning = FALSE}
+# Using the trained workflow (flu_module10_fit_part2) to predict with the unseen test data
+predict(flu_module10_fit_part2, test_data_part2)
+
+# Using argument() with the model plus test data for saving them together
+flu_module10_aug_part2 <- 
+  augment(flu_module10_fit_part2, test_data_part2)
+  
+flu_module10_aug_part2 %>% select(BodyTemp, .pred)
+
+# Model fitting using RMSE
+flu_module10_aug_part2 %>% yardstick::rmse(truth = BodyTemp, .pred)
+
+# Model fitting using R^2
+flu_module10_aug_part2 %>% yardstick::rsq(truth = BodyTemp, .pred)
+```
+
+**ALTERNATIVE MODEL: USING BODY TEMPERATURE AS CONTINUOUS OUTCOME OF INTEREST AND RUNNY NOSE AS THE MAIN PREDICTOR**
+
+```{r}
+# Using Body Temperature as a continuous outcome of interest and Runny Nose as the main predictor
+flu_module10_rec_part2a <- recipe(BodyTemp ~ RunnyNose, data = train_data_part2)
+
+# Fitting the linear model
+flu_module10_mod_part2a <- linear_reg() %>% 
+                    set_engine("lm")
+
+# Modelling workflow for pairing model and recipe 
+flu_module10_wflow_part2a <- workflow() %>% 
+  add_model(flu_module10_mod_part2a) %>% 
+  add_recipe(flu_module10_rec_part2a)
+flu_module10_wflow_part2a
+
+# Using the resulting predictors for preparing recipe and training the model
+flu_module10_fit_part2a <- 
+ flu_module10_wflow_part2a %>% 
+  fit(data = train_data_part2)
+
+# Pulling the fitted model object and using tidy() function for getting a tidy tibble of model coefficients
+flu_module10_fit_part2a %>% 
+  extract_fit_parsnip() %>% 
+  tidy()
+```
+
+**ALTERNATIVE MODEL: USING TRAINED WORKFLOW TO PREDICT**
+
+```{r, warning = FALSE}
+# Using the trained workflow (flu_module10_fit_part2a) to predict with the unseen test data
+predict(flu_module10_fit_part2a, test_data_part2)
+
+# Using argument() with the model plus test data for saving them together
+flu_module10_aug_part2a <- 
+  augment(flu_module10_fit_part2a, test_data_part2)
+  
+flu_module10_aug_part2a %>%
+  select(BodyTemp, .pred)
+
+# Model fitting using RMSE
+flu_module10_aug_part2a %>% yardstick::rmse(truth = BodyTemp, .pred)
+
+# Model fitting using R^2
+flu_module10_aug_part2a %>% yardstick::rsq(truth = BodyTemp, .pred)
+```
+
+From the above results, it seems both models performed poorly. The full model (using Body Temperature as the main continuous outcome of interest and all variables as predictors) with RMSE 1.15 performed little better compared to the alternative model (using Body Temperature as the main continuous outcome of interest and Runny Nose as the main predictor) with RMSE 1.12. 
