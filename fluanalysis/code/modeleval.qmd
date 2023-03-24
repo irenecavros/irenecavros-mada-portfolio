@@ -128,7 +128,7 @@ nausea_aug_test2%>%
 
 It looks like the model built and trained based on all predictors has a higher ROC_AUC than the alternative model.
 
-************THIS SECTION ADDED BY SHIWANI SAPKOTA****************
+\*\*\*\*\*\*\*\*\*\*\*\*THIS SECTION ADDED BY SHIWANI SAPKOTA\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*
 
 # Creating sets for training and testing
 
@@ -237,4 +237,4 @@ flu_module10_aug_part2a %>% yardstick::rmse(truth = BodyTemp, .pred)
 flu_module10_aug_part2a %>% yardstick::rsq(truth = BodyTemp, .pred)
 ```
 
-From the above results, it seems both models performed poorly. The full model (using Body Temperature as the main continuous outcome of interest and all variables as predictors) with RMSE 1.15 performed little better compared to the alternative model (using Body Temperature as the main continuous outcome of interest and Runny Nose as the main predictor) with RMSE 1.12. 
+From the above results, it seems both models performed poorly. The full model (using Body Temperature as the main continuous outcome of interest and all variables as predictors) with RMSE 1.15 performed little better compared to the alternative model (using Body Temperature as the main continuous outcome of interest and Runny Nose as the main predictor) with RMSE 1.12.
