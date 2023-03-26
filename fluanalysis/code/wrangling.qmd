@@ -1,5 +1,5 @@
 ---
-title: "Module 8 Wrangling"
+title: "Data Wrangling"
 output: 
   html_document:
     toc: FALSE
@@ -7,7 +7,7 @@ output:
 
 #### Introduction
 
-During the exercise for model 8, we will practice a bit of model fitting using the `tidymodels` framework.
+During the exercise, we will practice a bit of model fitting using the `tidymodels` framework.
 
 #### Load packages
 
@@ -18,6 +18,8 @@ library('tidyr') #for data processing/cleaning
 library('skimr') #for nice visualization of data 
 library('here') #to set paths
 ```
+
+### Initial Wrangling (Week 8)
 
 #### Get the data
 
@@ -49,16 +51,99 @@ We are now left with 32 variables coding for presence or absence of some symptom
 
 #### Let's remove any NA observations
 
-There aren't many.
+There aren't many. We can call this clean data 8 since it is not our final clean dataset, but it is what we generated as the first step of clean data in module 8. 
 
 ```{r}
-cleandata<- na.omit(df2)
+cleandata8<- na.omit(df2)
 ```
+
+
+
+### Additional pre-processing (Week 11)
+
+Let's revisit this dataset and perform some additional pre-processing before implementing some machine learning models. The below code will just allow us to check the data before we start our additional pre-processing. We will also need the `recipes` package for feature engineering. 
+
+```{r}
+dplyr::glimpse(cleandata8)
+summary(cleandata8)
+head(cleandata8)
+skimr::skim(cleandata8)
+lapply(cleandata8, levels)
+```
+
+I like to keep a bunch of summary code at the top in case I want to pull from it later. 
+
+We will need a few new packages for this section. 
+
+```{r}
+library(recipes)
+library(tidymodels)
+```
+
+#### Feature/variable removal
+
+For symptoms where we have both multiple levels and yes/no, we will remove all the yes/no versions. 
+
+```{r}
+summary(cleandata8) 
+```
+
+This summary is a nice way to show us all of the different variables and their levels. So based on that, we have duplicate variables for weakness, myalgia, and cough. We will drop the yes/no versions of this variable. There are actually 2 Y/N variables for cough so we will delete both and keep only the variable associated with cough intensity. 
+
+```{r}
+data11 <- cleandata8[-c(5,11,13,15)]
+```
+
+So to summarize, we have now removed 4 variables at this step. 
+
+#### Categorical/ordinal predictors
+
+Some of your predictors are categorical (e.g., Yes/No) and the 3 symptom severity factors are ordinal, with None < Mild < Moderate < Severe.
+
+We can code the categorical Yes/No variables as unordered factors and then code the variables that are on a severity scale as ordered factors. First we will code all categorical factors as unordered, and then we will go back and correct the ones we would like to be ordered.
+
+```{r}
+data11 %>% 
+  mutate(across(where(is.character), as.factor))
+```
+So now we can go back and recode the variables that are on a severity scale, since there is an ordinal nature to them. Those variables are `Weakness`, `CoughIntensity`, and `Myalgia`.
+
+```{r}
+data11 %>% 
+  mutate(Weakness = factor(Weakness, levels = c("None", "Mild", "Moderate", "Severe"), ordered = TRUE),
+         CoughIntensity = factor(CoughIntensity, levels = c("None", "Mild", "Moderate", "Severe"), ordered = TRUE), 
+         Myalgia = factor(Myalgia, levels = c("None", "Mild", "Moderate", "Severe"), ordered = TRUE))
+```
+
+#### Low/near zero variance predictors
+
+Let's take a look at the data again from the lens of how much variance each predictor has. 
+
+```{r}
+summary(data11) #shows us all of the different variables and their levels
+```
+
+Let's write code to remove binary predictors that have <50 entries in one category. We can see from above that the two variables which are both binary and fit the criteria of having <50 entries are `Hearing` and `Vision`. 
+
+```{r}
+data11v2 <- data11[-c(21,25)]
+```
+
+2 predictors have been removed. Now we end up with a data frame that has 730 observations and 26 variables. This is the dataset we’ll use for our machine learning modeling.
+
+### Creating a new file for processed data
+
+```{r}
+cleandata11 <- data11v2
+```
+
 
 #### Saving the cleaned data
 
 ```{r}
-save_data_location <- here::here("fluanalysis", "data", "cleandata.rds")
-saveRDS(cleandata, file = save_data_location)
+save_data_location <- here::here("fluanalysis", "data", "cleandata11.rds")
+saveRDS(cleandata11, file = save_data_location)
 ```
+
+From here, we will do some data analysis in the `machinelearning.qmd` file. Please review the `readme` files for additional detail on the order and nature of each of the project files. 
 

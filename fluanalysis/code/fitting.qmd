@@ -1,5 +1,5 @@
 ---
-title: "Module 8 Fitting"
+title: "Data Fitting"
 output: html_document
 ---
 

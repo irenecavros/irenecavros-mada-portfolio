@@ -1,5 +1,5 @@
 ---
-title: "Module Evaluation"
+title: "Model Evaluation"
 author: "Irene Cavros"
 format: html
 editor: visual
