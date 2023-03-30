@@ -1,0 +1,340 @@
+---
+title: "Machine Learning"
+author: "Irene Cavros"
+format: html
+editor: visual
+---
+
+#### Load Packages
+
+```{r}
+library(here) 
+library(skimr) 
+library(tidyverse) 
+library(ggplot2)
+library(tidymodels) 
+library(ranger) 
+library(glmnet) 
+library(rpart)
+library(rpart.plot)
+library(vip)
+
+library(performance) 
+library(recipes)
+library(yardstick)
+library(Metrics)
+```
+
+#### Load Dataset
+
+```{r}
+#Path to data. 
+data_location <- here::here("fluanalysis","data","cleandata11.rds")
+#load data
+mydata <- readRDS(data_location)
+```
+
+#### Data Summary
+
+Let's take a high-level look at the data before we start.
+
+```{r}
+dplyr::glimpse(mydata)
+summary(mydata)
+head(mydata)
+skimr::skim(mydata)
+lapply(mydata, levels)
+```
+
+#### Data setup
+
+```{r}
+set.seed(123) #so analysis can be reproducible when random numbers are involved
+
+data_split=initial_split(mydata, prop = 7/10, strata = BodyTemp) # data is split to 70% training, 30% testing
+
+#Data frames for train and test dataset 
+train_data <- training(data_split)
+test_data <- testing(data_split)
+```
+
+5-fold cross validation, 5 times repeated: For the CV folds, we also want to stratify on BodyTemp, as we did for the main train/test split. We will use the `vfold_cv()` function to create a resample object for the training data with these specifications.
+
+#### 5-fold cross validation, repeated 5 times
+
+```{r}
+fold_data <- vfold_cv(train_data, v = 5, repeats = 5, strata = BodyTemp)
+```
+
+#### Create a recipe
+
+```{r}
+#recipe 
+data_recipe <- recipe(BodyTemp ~ ., data = train_data) %>%
+  step_dummy(all_nominal(), -all_outcomes())
+```
+
+## Null Model Performance
+
+#### Null recipe
+
+```{r}
+null_recipe <- recipe(BodyTemp ~ 1, data = train_data) %>%
+  step_dummy(all_nominal(), -all_outcomes())
+```
+
+**Logistic model recipe**
+
+```{r}
+recipe_logmod <- linear_reg() %>% 
+  set_engine("lm") %>% 
+  set_mode("regression")
+```
+
+**Workflow pairing model and recipe**
+
+```{r}
+null_wf <- workflow() %>% 
+  add_model(recipe_logmod) %>% 
+  add_recipe(null_recipe)
+```
+
+**Fit the null model to the folds made from the train data set.**
+
+```{r}
+null_train <- fit_resamples(null_wf, resamples = fold_data)
+```
+
+**Collect metrics and compute the RMSE for the test and training data**
+
+```{r}
+null_metrics <- collect_metrics(null_train)
+tibble(null_metrics)
+
+```
+
+## Fit a tree model
+
+```{r}
+tree_mod <- decision_tree( 
+  cost_complexity = tune(),
+  tree_depth = tune()
+  ) %>%
+  set_engine("rpart") %>%
+  set_mode("regression")
+tree_mod
+
+#set up grid
+tree_grid <- 
+  grid_regular(cost_complexity(), 
+               tree_depth(), 
+               levels = 5)
+
+tree_grid %>%
+  count(tree_depth)
+
+#model tuning using grid
+tree_wf <- workflow() %>%
+  add_model(tree_mod) %>%
+  add_recipe(data_recipe)
+
+
+tree_res <- 
+  tree_wf %>%
+  tune_grid(
+    resamples = fold_data, grid = tree_grid)
+
+tree_res %>%
+  collect_metrics()
+```
+
+**Determining the best tree**
+
+```{r}
+tree_res %>%
+  show_best()
+
+#autoplotting the trees
+tree_res %>% autoplot()
+
+best_tree <- tree_res %>% #identifying the best tree
+  select_best(n=1)
+```
+
+**Final model, fit, and plot**
+
+```{r}
+#final tuned model
+finaltree_wf <- 
+  tree_wf %>% 
+  finalize_workflow(best_tree)
+
+#final fit
+finaltree_fit <- 
+  finaltree_wf %>%
+  fit(train_data) 
+
+#plot
+tree_plot <-rpart.plot(extract_fit_parsnip(finaltree_fit)$fit)
+
+#predicted
+predtree_fit <- predict(finaltree_fit, train_data)
+```
+
+## Fit a LASSO model
+
+```{r}
+lasso_mod <- 
+  linear_reg(penalty = tune(), 
+            mixture = 1) %>%
+            set_engine("glmnet")
+
+#recipe
+data_recipe
+
+#workflow
+lasso_wf <- 
+  workflow() %>% 
+  add_model(lasso_mod) %>% 
+  add_recipe(data_recipe)
+
+#model tuning using grid
+lasso_grid <- tibble(penalty = 10^seq(-4, -1, length.out = 30))
+lasso_grid %>% top_n(-5) # lowest penalty
+lasso_grid %>% top_n(5)  # highest penalty
+
+#train model
+lasso_res <- 
+  lasso_wf %>%
+  tune_grid(
+    resamples = fold_data, 
+    grid = lasso_grid,
+    control = control_grid(verbose = FALSE, save_pred = TRUE),
+            metrics = NULL)
+
+lasso_res %>%
+  collect_metrics()
+```
+
+#### Determining the best model
+
+```{r}
+lasso_res %>%
+  show_best()
+
+#autoplotting 
+lasso_res %>% autoplot()
+
+best_lasso <- lasso_res %>% #identifying the best tree
+  select_best(n=1)
+```
+
+#### Final model, fit, and plot
+
+```{r}
+#final tuned model
+finallasso_wf <- 
+  lasso_wf %>% 
+  finalize_workflow(best_lasso)
+
+#final fit
+finallasso_fit <- 
+  finallasso_wf %>%
+  fit(train_data) 
+
+#plot
+lasso_plot <- extract_fit_engine(finallasso_fit)
+plot(lasso_plot, "lambda")
+
+#predicted
+predlasso_fit <- predict(finallasso_fit, train_data)
+```
+
+## Fit a random forest 
+
+```{r}
+cores <- parallel::detectCores()
+cores
+
+#model
+rf_mod <- 
+  rand_forest(mtry = tune(), min_n = tune(), trees = 1000) %>% 
+  set_engine("ranger",importance = "impurity", num.threads = cores) %>%
+  set_mode("regression")
+
+#recipe
+data_recipe
+
+#workflow
+rf_wf <- workflow() %>%
+  add_model(rf_mod) %>%
+  add_recipe(data_recipe)
+
+#tune and train
+rf_mod
+extract_parameter_set_dials(rf_mod)
+
+rf_res <- 
+  rf_wf %>% 
+  tune_grid(fold_data,
+            grid = 25,
+            control = control_grid(save_pred = TRUE),
+            metrics = NULL)
+
+```
+
+#### Determining the best model
+
+```{r}
+rf_res %>%
+  show_best()
+
+#autoplotting 
+rf_res %>% autoplot()
+
+#identifying the best model
+best_rf <- rf_res %>% 
+  select_best(n=1)
+```
+
+#### Final model, fit, and plot
+
+```{r}
+#final tuned model
+finalrf_wf <- 
+  rf_wf %>% 
+  finalize_workflow(best_rf)
+
+#final fit
+finalrf_fit <- 
+  finalrf_wf %>%
+  fit(train_data) 
+
+finalrf_fit %>% 
+  extract_fit_parsnip() %>% 
+  vip(num_features = 28)
+
+#plot
+rf_plot <- extract_fit_engine(finalrf_fit) 
+vip(rf_plot)
+
+#predicted
+predlasso_rf <- predict(finalrf_fit, train_data)
+```
+
+## Final Evaluation
+
+#### Model Selection
+
+Based on rmse, the LASSO model appears to perform the best.
+
+**Fit final LASSO data**
+
+```{r}
+finallasso <- 
+  finallasso_wf %>%
+  last_fit(data_split) 
+
+finallasso %>%
+   collect_metrics()
+```
