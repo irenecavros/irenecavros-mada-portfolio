@@ -190,6 +190,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <a class="dropdown-item" href="../.././fluanalysis/code/modeleval.html">
  <span class="dropdown-text">Model Evaluation</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../.././fluanalysis/code/machinelearning.html">
+ <span class="dropdown-text">Machine Learning</span></a>
+  </li>  
     </ul>
   </li>
 </ul>
@@ -252,12 +256,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr) <span class="co">#for data processing/cleaning</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr) <span class="co">#for data processing/cleaning</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gtsummary) <span class="co">#for summarizing data</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(forcats) <span class="co">#for working with categorical variables</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2) <span class="co">#for nice plots</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cowplot) <span class="co">#addon to ggplot for nice plots</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(skimr) <span class="co">#for nice visualization of data </span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels) <span class="co">#for modeling</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gtsummary) <span class="co">#for summarizing data</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>#StandWithUkraine</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(forcats) <span class="co">#for working with categorical variables</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2) <span class="co">#for nice plots</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cowplot) <span class="co">#addon to ggplot for nice plots</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(skimr) <span class="co">#for nice visualization of data </span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels) <span class="co">#for modeling</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>── Attaching packages ────────────────────────────────────── tidymodels 1.0.0 ──
 ✔ broom        1.0.3     ✔ rsample      1.1.1
@@ -278,19 +285,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ✖ dplyr::lag()           masks stats::lag()
 ✖ yardstick::spec()      masks readr::spec()
 ✖ recipes::step()        masks stats::step()
-• Search for functions across packages at https://www.tidymodels.org/find/</code></pre>
+• Dig deeper into tidy modeling with R at https://www.tmwr.org</code></pre>
 </div>
 </div>
 <p>####Load the data</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Path to data. Note the use of the here() package and not absolute paths</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>cleandata <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">"fluanalysis"</span>, <span class="st">"data"</span>, <span class="st">"cleandata.rds"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Path to data. Note the use of the here() package and not absolute paths</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>cleandata <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">"fluanalysis"</span>, <span class="st">"data"</span>, <span class="st">"cleandata.rds"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="look-at-variable-types" class="level4">
 <h4 class="anchored" data-anchor-id="look-at-variable-types">Look at variable types</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(cleandata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(cleandata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>'data.frame':   730 obs. of  32 variables:
  $ SwollenLymphNodes: Factor w/ 2 levels "No","Yes": 2 2 2 2 2 1 1 1 2 1 ...
@@ -334,8 +341,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h4 class="anchored" data-anchor-id="produce-and-save-a-summary-table.">Produce and save a summary table.</h4>
 <p>This also helps us get things into the shape of a data frame (for easier saving)</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># looking at the data</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>summary_df <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">glimpse</span>(cleandata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># looking at the data</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>summary_df <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">glimpse</span>(cleandata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 730
 Columns: 32
@@ -372,16 +379,16 @@ $ Vomit             &lt;fct&gt; No, No, No, No, No, No, Yes, No, No, No, Yes, Ye
 $ Wheeze            &lt;fct&gt; No, No, No, Yes, No, Yes, No, No, No, No, No, Yes, N…
 $ BodyTemp          &lt;dbl&gt; 98.3, 100.4, 100.8, 98.8, 100.5, 98.4, 102.5, 98.4, …</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># save to file</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>summarytable_file <span class="ot">=</span> <span class="fu">here</span>(<span class="st">"fluanalysis"</span>, <span class="st">"data"</span>, <span class="st">"summarytable.rds"</span>)</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(summary_df, <span class="at">file =</span> summarytable_file)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># save to file</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>summarytable_file <span class="ot">=</span> <span class="fu">here</span>(<span class="st">"fluanalysis"</span>, <span class="st">"data"</span>, <span class="st">"summarytable.rds"</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(summary_df, <span class="at">file =</span> summarytable_file)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="outcomes-of-interest" class="level4">
 <h4 class="anchored" data-anchor-id="outcomes-of-interest">Outcomes of interest</h4>
 <p>For our further analysis, we decide that our main continuous outcome of interest is <strong>Body temperature</strong>, and our main categorical outcome is <strong>Nausea</strong>. We want to see if the other symptoms are correlated with (predict) those outcomes.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cleandata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cleandata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> SwollenLymphNodes ChestCongestion ChillsSweats NasalCongestion CoughYN  
  No :418           No :323         No :130      No :167         No : 75  
@@ -429,21 +436,21 @@ $ BodyTemp          &lt;dbl&gt; 98.3, 100.4, 100.8, 98.8, 100.5, 98.4, 102.5, 98
 </div>
 <p>Let’s produce and print some summary output with a smaller subset of variables.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># make subset with a few variables to summarize</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>subset <span class="ot">&lt;-</span> cleandata <span class="sc">%&gt;%</span> <span class="fu">select</span>(BodyTemp, SwollenLymphNodes, ChillsSweats, AbPain, Diarrhea, Nausea, Vomit)</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># summarize the data</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>subsettable <span class="ot">&lt;-</span> </span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_summary</span>(subset)</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>subsettable</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># make subset with a few variables to summarize</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>subset <span class="ot">&lt;-</span> cleandata <span class="sc">%&gt;%</span> <span class="fu">select</span>(BodyTemp, SwollenLymphNodes, ChillsSweats, AbPain, Diarrhea, Nausea, Vomit)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># summarize the data</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>subsettable <span class="ot">&lt;-</span> </span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_summary</span>(subset)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>subsettable</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
-<div id="vqzzlxzpsk" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="nazlwvmuak" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-:where(#vqzzlxzpsk) .gt_table {
+:where(#nazlwvmuak) .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -468,7 +475,7 @@ $ BodyTemp          &lt;dbl&gt; 98.3, 100.4, 100.8, 98.8, 100.5, 98.4, 102.5, 98
   border-left-color: #D3D3D3;
 }
 
-:where(#vqzzlxzpsk) .gt_heading {
+:where(#nazlwvmuak) .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -480,12 +487,12 @@ $ BodyTemp          &lt;dbl&gt; 98.3, 100.4, 100.8, 98.8, 100.5, 98.4, 102.5, 98
   border-right-color: #D3D3D3;
 }
 
-:where(#vqzzlxzpsk) .gt_caption {
+:where(#nazlwvmuak) .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-:where(#vqzzlxzpsk) .gt_title {
+:where(#nazlwvmuak) .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -497,7 +504,7 @@ $ BodyTemp          &lt;dbl&gt; 98.3, 100.4, 100.8, 98.8, 100.5, 98.4, 102.5, 98
   border-bottom-width: 0;
 }
 
-:where(#vqzzlxzpsk) .gt_subtitle {
+:where(#nazlwvmuak) .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -509,13 +516,13 @@ $ BodyTemp          &lt;dbl&gt; 98.3, 100.4, 100.8, 98.8, 100.5, 98.4, 102.5, 98
   border-top-width: 0;
 }
 
-:where(#vqzzlxzpsk) .gt_bottom_border {
+:where(#nazlwvmuak) .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-:where(#vqzzlxzpsk) .gt_col_headings {
+:where(#nazlwvmuak) .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -530,7 +537,7 @@ $ BodyTemp          &lt;dbl&gt; 98.3, 100.4, 100.8, 98.8, 100.5, 98.4, 102.5, 98
   border-right-color: #D3D3D3;
 }
 
-:where(#vqzzlxzpsk) .gt_col_heading {
+:where(#nazlwvmuak) .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -550,7 +557,7 @@ $ BodyTemp          &lt;dbl&gt; 98.3, 100.4, 100.8, 98.8, 100.5, 98.4, 102.5, 98
   overflow-x: hidden;
 }
 
-:where(#vqzzlxzpsk) .gt_column_spanner_outer {
+:where(#nazlwvmuak) .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -562,15 +569,15 @@ $ BodyTemp          &lt;dbl&gt; 98.3, 100.4, 100.8, 98.8, 100.5, 98.4, 102.5, 98
   padding-right: 4px;
 }
 
-:where(#vqzzlxzpsk) .gt_column_spanner_outer:first-child {
+:where(#nazlwvmuak) .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-:where(#vqzzlxzpsk) .gt_column_spanner_outer:last-child {
+:where(#nazlwvmuak) .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-:where(#vqzzlxzpsk) .gt_column_spanner {
+:where(#nazlwvmuak) .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -582,7 +589,7 @@ $ BodyTemp          &lt;dbl&gt; 98.3, 100.4, 100.8, 98.8, 100.5, 98.4, 102.5, 98
   width: 100%;
 }
 
-:where(#vqzzlxzpsk) .gt_group_heading {
+:where(#nazlwvmuak) .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -608,7 +615,7 @@ $ BodyTemp          &lt;dbl&gt; 98.3, 100.4, 100.8, 98.8, 100.5, 98.4, 102.5, 98
   text-align: left;
 }
 
-:where(#vqzzlxzpsk) .gt_empty_group_heading {
+:where(#nazlwvmuak) .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -623,15 +630,15 @@ $ BodyTemp          &lt;dbl&gt; 98.3, 100.4, 100.8, 98.8, 100.5, 98.4, 102.5, 98
   vertical-align: middle;
 }
 
-:where(#vqzzlxzpsk) .gt_from_md > :first-child {
+:where(#nazlwvmuak) .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-:where(#vqzzlxzpsk) .gt_from_md > :last-child {
+:where(#nazlwvmuak) .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-:where(#vqzzlxzpsk) .gt_row {
+:where(#nazlwvmuak) .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -650,7 +657,7 @@ $ BodyTemp          &lt;dbl&gt; 98.3, 100.4, 100.8, 98.8, 100.5, 98.4, 102.5, 98
   overflow-x: hidden;
 }
 
-:where(#vqzzlxzpsk) .gt_stub {
+:where(#nazlwvmuak) .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -663,7 +670,7 @@ $ BodyTemp          &lt;dbl&gt; 98.3, 100.4, 100.8, 98.8, 100.5, 98.4, 102.5, 98
   padding-right: 5px;
 }
 
-:where(#vqzzlxzpsk) .gt_stub_row_group {
+:where(#nazlwvmuak) .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -677,11 +684,11 @@ $ BodyTemp          &lt;dbl&gt; 98.3, 100.4, 100.8, 98.8, 100.5, 98.4, 102.5, 98
   vertical-align: top;
 }
 
-:where(#vqzzlxzpsk) .gt_row_group_first td {
+:where(#nazlwvmuak) .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-:where(#vqzzlxzpsk) .gt_summary_row {
+:where(#nazlwvmuak) .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -691,16 +698,16 @@ $ BodyTemp          &lt;dbl&gt; 98.3, 100.4, 100.8, 98.8, 100.5, 98.4, 102.5, 98
   padding-right: 5px;
 }
 
-:where(#vqzzlxzpsk) .gt_first_summary_row {
+:where(#nazlwvmuak) .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-:where(#vqzzlxzpsk) .gt_first_summary_row.thick {
+:where(#nazlwvmuak) .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-:where(#vqzzlxzpsk) .gt_last_summary_row {
+:where(#nazlwvmuak) .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -710,7 +717,7 @@ $ BodyTemp          &lt;dbl&gt; 98.3, 100.4, 100.8, 98.8, 100.5, 98.4, 102.5, 98
   border-bottom-color: #D3D3D3;
 }
 
-:where(#vqzzlxzpsk) .gt_grand_summary_row {
+:where(#nazlwvmuak) .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -720,7 +727,7 @@ $ BodyTemp          &lt;dbl&gt; 98.3, 100.4, 100.8, 98.8, 100.5, 98.4, 102.5, 98
   padding-right: 5px;
 }
 
-:where(#vqzzlxzpsk) .gt_first_grand_summary_row {
+:where(#nazlwvmuak) .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -730,11 +737,11 @@ $ BodyTemp          &lt;dbl&gt; 98.3, 100.4, 100.8, 98.8, 100.5, 98.4, 102.5, 98
   border-top-color: #D3D3D3;
 }
 
-:where(#vqzzlxzpsk) .gt_striped {
+:where(#nazlwvmuak) .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-:where(#vqzzlxzpsk) .gt_table_body {
+:where(#nazlwvmuak) .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -743,7 +750,7 @@ $ BodyTemp          &lt;dbl&gt; 98.3, 100.4, 100.8, 98.8, 100.5, 98.4, 102.5, 98
   border-bottom-color: #D3D3D3;
 }
 
-:where(#vqzzlxzpsk) .gt_footnotes {
+:where(#nazlwvmuak) .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -757,7 +764,7 @@ $ BodyTemp          &lt;dbl&gt; 98.3, 100.4, 100.8, 98.8, 100.5, 98.4, 102.5, 98
   border-right-color: #D3D3D3;
 }
 
-:where(#vqzzlxzpsk) .gt_footnote {
+:where(#nazlwvmuak) .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -766,7 +773,7 @@ $ BodyTemp          &lt;dbl&gt; 98.3, 100.4, 100.8, 98.8, 100.5, 98.4, 102.5, 98
   padding-right: 5px;
 }
 
-:where(#vqzzlxzpsk) .gt_sourcenotes {
+:where(#nazlwvmuak) .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -780,7 +787,7 @@ $ BodyTemp          &lt;dbl&gt; 98.3, 100.4, 100.8, 98.8, 100.5, 98.4, 102.5, 98
   border-right-color: #D3D3D3;
 }
 
-:where(#vqzzlxzpsk) .gt_sourcenote {
+:where(#nazlwvmuak) .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -788,64 +795,64 @@ $ BodyTemp          &lt;dbl&gt; 98.3, 100.4, 100.8, 98.8, 100.5, 98.4, 102.5, 98
   padding-right: 5px;
 }
 
-:where(#vqzzlxzpsk) .gt_left {
+:where(#nazlwvmuak) .gt_left {
   text-align: left;
 }
 
-:where(#vqzzlxzpsk) .gt_center {
+:where(#nazlwvmuak) .gt_center {
   text-align: center;
 }
 
-:where(#vqzzlxzpsk) .gt_right {
+:where(#nazlwvmuak) .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-:where(#vqzzlxzpsk) .gt_font_normal {
+:where(#nazlwvmuak) .gt_font_normal {
   font-weight: normal;
 }
 
-:where(#vqzzlxzpsk) .gt_font_bold {
+:where(#nazlwvmuak) .gt_font_bold {
   font-weight: bold;
 }
 
-:where(#vqzzlxzpsk) .gt_font_italic {
+:where(#nazlwvmuak) .gt_font_italic {
   font-style: italic;
 }
 
-:where(#vqzzlxzpsk) .gt_super {
+:where(#nazlwvmuak) .gt_super {
   font-size: 65%;
 }
 
-:where(#vqzzlxzpsk) .gt_footnote_marks {
+:where(#nazlwvmuak) .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-:where(#vqzzlxzpsk) .gt_asterisk {
+:where(#nazlwvmuak) .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-:where(#vqzzlxzpsk) .gt_indent_1 {
+:where(#nazlwvmuak) .gt_indent_1 {
   text-indent: 5px;
 }
 
-:where(#vqzzlxzpsk) .gt_indent_2 {
+:where(#nazlwvmuak) .gt_indent_2 {
   text-indent: 10px;
 }
 
-:where(#vqzzlxzpsk) .gt_indent_3 {
+:where(#nazlwvmuak) .gt_indent_3 {
   text-indent: 15px;
 }
 
-:where(#vqzzlxzpsk) .gt_indent_4 {
+:where(#nazlwvmuak) .gt_indent_4 {
   text-indent: 20px;
 }
 
-:where(#vqzzlxzpsk) .gt_indent_5 {
+:where(#nazlwvmuak) .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -888,11 +895,11 @@ $ BodyTemp          &lt;dbl&gt; 98.3, 100.4, 100.8, 98.8, 100.5, 98.4, 102.5, 98
 <h4 class="anchored" data-anchor-id="outcome-of-interest-1-body-temperature">Outcome of interest #1: Body temperature</h4>
 <p>Since body temperature is continuous, let’s create a histogram/density plot.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(subset, <span class="fu">aes</span>(BodyTemp)) <span class="sc">+</span> </span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>() <span class="sc">+</span> </span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Body Temperature Density"</span>, <span class="at">x =</span> <span class="st">"Body Temperature (Farenheit)"</span>, <span class="at">y =</span> <span class="st">"Density"</span>) <span class="sc">+</span> <span class="fu">scale_fill_discrete</span>(<span class="at">labels=</span><span class="fu">c</span>(<span class="st">'No'</span>, <span class="st">'Yes'</span>)) <span class="sc">+</span> <span class="fu">theme_classic</span>()</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>p1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(subset, <span class="fu">aes</span>(BodyTemp)) <span class="sc">+</span> </span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>() <span class="sc">+</span> </span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Body Temperature Density"</span>, <span class="at">x =</span> <span class="st">"Body Temperature (Farenheit)"</span>, <span class="at">y =</span> <span class="st">"Density"</span>) <span class="sc">+</span> <span class="fu">scale_fill_discrete</span>(<span class="at">labels=</span><span class="fu">c</span>(<span class="st">'No'</span>, <span class="st">'Yes'</span>)) <span class="sc">+</span> <span class="fu">theme_classic</span>()</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>p1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="exploration_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -900,24 +907,24 @@ $ BodyTemp          &lt;dbl&gt; 98.3, 100.4, 100.8, 98.8, 100.5, 98.4, 102.5, 98
 <p>This tells us the frequency of body temperatures in the dataset.</p>
 <p>Let’s create some boxplots including this outcome and the shortlist of independent variables/predictors we have chosen.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">#boxplot of BodyTemp x SwollenLymphNodes</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(subset, <span class="fu">aes</span>(<span class="at">x=</span>BodyTemp, <span class="at">y=</span>SwollenLymphNodes)) <span class="sc">+</span> </span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">fill =</span> <span class="st">"gray"</span>) <span class="sc">+</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"BodyTemp x SwollenLymphNodes"</span>, <span class="at">x =</span> <span class="st">"Body Temperature (Farenheit)"</span>, <span class="at">y =</span> <span class="st">"Swollen Lymph Nodes"</span>) <span class="sc">+</span> <span class="fu">scale_fill_discrete</span>(<span class="at">labels=</span><span class="fu">c</span>(<span class="st">'No'</span>, <span class="st">'Yes'</span>)) <span class="sc">+</span> <span class="fu">theme_classic</span>()</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">#boxplot of BodyTemp x SwollenLymphNodes</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(subset, <span class="fu">aes</span>(<span class="at">x=</span>BodyTemp, <span class="at">y=</span>SwollenLymphNodes)) <span class="sc">+</span> </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">fill =</span> <span class="st">"gray"</span>) <span class="sc">+</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"BodyTemp x SwollenLymphNodes"</span>, <span class="at">x =</span> <span class="st">"Body Temperature (Farenheit)"</span>, <span class="at">y =</span> <span class="st">"Swollen Lymph Nodes"</span>) <span class="sc">+</span> <span class="fu">scale_fill_discrete</span>(<span class="at">labels=</span><span class="fu">c</span>(<span class="st">'No'</span>, <span class="st">'Yes'</span>)) <span class="sc">+</span> <span class="fu">theme_classic</span>()</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="exploration_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Based on this plot, it looks like the average body temperature among those without swollen lymph nodes looks marginally higher with a larger spread. This doesn’t really point to anything too interesting so let’s try chills.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">#boxplot of BodyTemp x ChillsSweats</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(subset, <span class="fu">aes</span>(<span class="at">x=</span>BodyTemp, <span class="at">y=</span>ChillsSweats)) <span class="sc">+</span> </span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">fill =</span> <span class="st">"gray"</span>) <span class="sc">+</span></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"BodyTemp x ChillsSweats"</span>, <span class="at">x =</span> <span class="st">"Body Temperature (Farenheit)"</span>, <span class="at">y =</span> <span class="st">"Experienced Chills or Sweats"</span>) <span class="sc">+</span> <span class="fu">scale_fill_discrete</span>(<span class="at">labels=</span><span class="fu">c</span>(<span class="st">'No'</span>, <span class="st">'Yes'</span>)) <span class="sc">+</span> <span class="fu">theme_classic</span>()</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>p3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">#boxplot of BodyTemp x ChillsSweats</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(subset, <span class="fu">aes</span>(<span class="at">x=</span>BodyTemp, <span class="at">y=</span>ChillsSweats)) <span class="sc">+</span> </span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">fill =</span> <span class="st">"gray"</span>) <span class="sc">+</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"BodyTemp x ChillsSweats"</span>, <span class="at">x =</span> <span class="st">"Body Temperature (Farenheit)"</span>, <span class="at">y =</span> <span class="st">"Experienced Chills or Sweats"</span>) <span class="sc">+</span> <span class="fu">scale_fill_discrete</span>(<span class="at">labels=</span><span class="fu">c</span>(<span class="st">'No'</span>, <span class="st">'Yes'</span>)) <span class="sc">+</span> <span class="fu">theme_classic</span>()</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>p3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="exploration_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -925,12 +932,12 @@ $ BodyTemp          &lt;dbl&gt; 98.3, 100.4, 100.8, 98.8, 100.5, 98.4, 102.5, 98
 <p>In this plot, the mean body temperature among those who experienced chills or sweating appears about a half degree higher than those without, and the spread is larger as well. This could potentially be interesting, but let’s do a few more plots to look at the nausea outcome as well.</p>
 <p>For now, let’s use nausea as a predictor and keep bodytemp as the outcome.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">#boxplot of BodyTemp x Nausea</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>p4 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(subset, <span class="fu">aes</span>(<span class="at">x=</span>BodyTemp, <span class="at">y=</span>Nausea)) <span class="sc">+</span> </span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">fill =</span> <span class="st">"gray"</span>) <span class="sc">+</span></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"BodyTemp x Nausea"</span>, <span class="at">x =</span> <span class="st">"Body Temperature (Farenheit)"</span>, <span class="at">y =</span> <span class="st">"Nausea"</span>) <span class="sc">+</span> <span class="fu">scale_fill_discrete</span>(<span class="at">labels=</span><span class="fu">c</span>(<span class="st">'No'</span>, <span class="st">'Yes'</span>)) <span class="sc">+</span> <span class="fu">theme_classic</span>()</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>p4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co">#boxplot of BodyTemp x Nausea</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>p4 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(subset, <span class="fu">aes</span>(<span class="at">x=</span>BodyTemp, <span class="at">y=</span>Nausea)) <span class="sc">+</span> </span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">fill =</span> <span class="st">"gray"</span>) <span class="sc">+</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"BodyTemp x Nausea"</span>, <span class="at">x =</span> <span class="st">"Body Temperature (Farenheit)"</span>, <span class="at">y =</span> <span class="st">"Nausea"</span>) <span class="sc">+</span> <span class="fu">scale_fill_discrete</span>(<span class="at">labels=</span><span class="fu">c</span>(<span class="st">'No'</span>, <span class="st">'Yes'</span>)) <span class="sc">+</span> <span class="fu">theme_classic</span>()</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>p4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="exploration_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -941,36 +948,36 @@ $ BodyTemp          &lt;dbl&gt; 98.3, 100.4, 100.8, 98.8, 100.5, 98.4, 102.5, 98
 <h4 class="anchored" data-anchor-id="outcome-of-interest-2-nausea">Outcome of interest #2: Nausea</h4>
 <p>Next let’s make nausea the outcome of interest. We can create some plots for this outcome and a few independent variables/predictors.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">#plot of Nausea x AbPain</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>NauAb <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">table</span>(subset<span class="sc">$</span>Nausea,subset<span class="sc">$</span>AbPain))</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(NauAb) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Nausea"</span>,<span class="st">"AbPain"</span>,<span class="st">"Count"</span>)</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>p5<span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>NauAb, <span class="fu">aes</span>(<span class="at">x=</span>Nausea, <span class="at">y=</span>Count, <span class="at">fill=</span>AbPain)) <span class="sc">+</span> <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">"identity"</span>)</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>p5</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">#plot of Nausea x AbPain</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>NauAb <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">table</span>(subset<span class="sc">$</span>Nausea,subset<span class="sc">$</span>AbPain))</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(NauAb) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Nausea"</span>,<span class="st">"AbPain"</span>,<span class="st">"Count"</span>)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>p5<span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>NauAb, <span class="fu">aes</span>(<span class="at">x=</span>Nausea, <span class="at">y=</span>Count, <span class="at">fill=</span>AbPain)) <span class="sc">+</span> <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">"identity"</span>)</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>p5</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="exploration_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Abdominal pain looks to be more common in those with nausea, than those without, which makes sense!</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co">#plot of Nausea x Diarrhea</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>NauDi <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">table</span>(subset<span class="sc">$</span>Nausea,subset<span class="sc">$</span>Diarrhea))</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(NauDi) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Nausea"</span>,<span class="st">"Diarrhea"</span>,<span class="st">"Count"</span>)</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>p6<span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>NauDi, <span class="fu">aes</span>(<span class="at">x=</span>Nausea, <span class="at">y=</span>Count, <span class="at">fill=</span>Diarrhea)) <span class="sc">+</span> <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">"identity"</span>)</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>p6</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">#plot of Nausea x Diarrhea</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>NauDi <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">table</span>(subset<span class="sc">$</span>Nausea,subset<span class="sc">$</span>Diarrhea))</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(NauDi) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Nausea"</span>,<span class="st">"Diarrhea"</span>,<span class="st">"Count"</span>)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>p6<span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>NauDi, <span class="fu">aes</span>(<span class="at">x=</span>Nausea, <span class="at">y=</span>Count, <span class="at">fill=</span>Diarrhea)) <span class="sc">+</span> <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">"identity"</span>)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>p6</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="exploration_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Diarrhea also appears to be more frequent among those with nausea, which, again, is logical.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">#plot of Nausea x Vomit</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>NauVom <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">table</span>(subset<span class="sc">$</span>Nausea,subset<span class="sc">$</span>Vomit))</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(NauVom) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Nausea"</span>,<span class="st">"Vomit"</span>,<span class="st">"Count"</span>)</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>p7<span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>NauVom, <span class="fu">aes</span>(<span class="at">x=</span>Vomit, <span class="at">y=</span>Count, <span class="at">fill=</span>Nausea)) <span class="sc">+</span> <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">"identity"</span>)</span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>p7</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co">#plot of Nausea x Vomit</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>NauVom <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">table</span>(subset<span class="sc">$</span>Nausea,subset<span class="sc">$</span>Vomit))</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(NauVom) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Nausea"</span>,<span class="st">"Vomit"</span>,<span class="st">"Count"</span>)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>p7<span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>NauVom, <span class="fu">aes</span>(<span class="at">x=</span>Vomit, <span class="at">y=</span>Count, <span class="at">fill=</span>Nausea)) <span class="sc">+</span> <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">"identity"</span>)</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>p7</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="exploration_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
 </div>
