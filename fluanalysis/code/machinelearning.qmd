@@ -250,7 +250,7 @@ plot(lasso_plot, "lambda")
 predlasso_fit <- predict(finallasso_fit, train_data)
 ```
 
-## Fit a random forest 
+## Fit a random forest
 
 ```{r}
 cores <- parallel::detectCores()
